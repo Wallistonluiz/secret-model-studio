@@ -1,21 +1,10 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import FeaturedModels from "@/components/FeaturedModels";
-import About from "@/components/About";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <Hero />
-        <FeaturedModels />
-        <About />
-        <Contact />
-      </main>
-      <Footer />
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="text-center">
+        <h1 className="mb-4 text-4xl font-bold">Secret Models</h1>
+        <p className="text-xl text-muted-foreground">Comece a construir seu projeto aqui!</p>
+      </div>
     </div>
   );
 };
