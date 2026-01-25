@@ -1,37 +1,39 @@
 
 
-## Adicionar Ícone de Usuário Verificado no Card da Modelo
+## Ajustes no Header para Desktop
 
 ### Objetivo
-Adicionar o ícone de "usuário verificado" (enviado pelo usuário) no canto superior direito do card da modelo Isabella.
+1. Remover a frase "Descubra modelos exclusivos" **apenas na versão desktop** (mantendo no mobile)
+2. Aumentar bastante o tamanho da logo na versão desktop
 
-### O que será feito
+### Mudanças Planejadas
 
-1. **Copiar a imagem** do ícone para a pasta `src/assets/` com o nome `usuario-verificado.png`
+**Arquivo:** `src/components/Header.tsx`
 
-2. **Importar a imagem** no componente `ModelCard.tsx`
+1. **Ocultar a frase no desktop:**
+   - Adicionar classe condicional na tag `<p>` para escondê-la quando `isMobile === false`
+   - A frase continuará visível apenas no mobile
 
-3. **Adicionar o ícone** posicionado no canto superior direito do card, dentro do container que possui `relative` e `rounded-3xl`
+2. **Aumentar a logo no desktop:**
+   - Atualmente: `w-28 h-28` (112px)
+   - Novo tamanho: `w-48 h-48` (192px) - aumento significativo
 
-### Detalhes Técnicos
+### Código Resultante
 
-**Arquivo:** `src/components/ModelCard.tsx`
-
-**Posicionamento do ícone:**
-- Usar `position: absolute` com `top-3 right-3` para posicionar no canto superior direito
-- Tamanho de aproximadamente 32-40px (`w-8 h-8` ou `w-10 h-10`)
-- Z-index para garantir que fique sobre a imagem
-
-**Estrutura do código a ser adicionado:**
 ```tsx
-{/* Verified badge */}
 <img 
-  src={verifiedIcon} 
-  alt="Usuário verificado" 
-  className="absolute top-3 right-3 w-8 h-8 z-10"
+  src={isMobile ? logoMobile : logo} 
+  alt="Secret Models" 
+  className={isMobile ? "h-10 object-contain" : "w-48 h-48 object-contain"} 
 />
+{isMobile && (
+  <p className="text-muted-foreground text-sm mt-1">
+    Descubra modelos exclusivos
+  </p>
+)}
 ```
 
 ### Resultado Esperado
-O ícone de verificação aparecerá no canto superior direito do card, indicando que a modelo é uma usuária verificada na plataforma.
+- **Mobile:** Logo compacta + frase visível
+- **Desktop:** Logo grande (192px) + sem frase
 
