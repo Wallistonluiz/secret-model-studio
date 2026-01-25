@@ -35,11 +35,13 @@ const Splash = () => {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Enter Button and Description */}
+      {/* Logo - posição independente */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pt-[180px]">
+        <img src={logo} alt="Secret Models" className="h-40 object-contain" />
+      </div>
+
+      {/* Botão e descrição - posição centralizada */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-        {/* Logo above button */}
-        <img src={logo} alt="Secret Models" className="h-40 object-contain mb-8 mt-[50px]" />
-        
         <Button
           onClick={handleEnter}
           className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg font-semibold rounded-full shadow-lg shadow-purple-500/30 transition-all duration-300 hover:scale-105"
