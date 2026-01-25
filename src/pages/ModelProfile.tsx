@@ -87,7 +87,7 @@ const ModelProfile = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/home")}
           className="text-foreground"
         >
           <ArrowLeft size={24} />
