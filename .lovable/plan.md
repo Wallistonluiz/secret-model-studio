@@ -1,68 +1,40 @@
 
-# Plano: Mostrar Aviso de Sucesso Antes de Redirecionar
+# Plano: Botões de Navegação com Círculo Perfeito
 
-## Situacao Atual
+## Problema Identificado
+Atualmente o botão usa `px-4 py-2` (padding horizontal maior que vertical), o que cria uma forma oval mesmo com `rounded-full`. Para um círculo perfeito, precisamos dimensões iguais em todos os eixos.
 
-O codigo ja possui uma tela de sucesso pronta (linhas 72-98), porem ela nunca e exibida porque apos o cadastro o sistema redireciona diretamente para `/login` na linha 68.
+## Solução
 
-## Alteracao Necessaria
+Vou modificar o estilo do botão ativo para usar dimensões fixas e iguais, garantindo um círculo perfeito:
 
-Modificar o `onSubmit` para:
-1. Setar `setSuccess(true)` em vez de redirecionar imediatamente
-2. A tela de sucesso ja existente sera exibida automaticamente
-3. Usuario clica no botao "Ir para Login" quando estiver pronto
+### Mudanças no arquivo `src/components/BottomNav.tsx`:
 
-### Arquivo: src/pages/Register.tsx
-
-**Modificar linha 68:**
-
-```typescript
-// DE:
-} else {
-  navigate('/login');
-}
-
-// PARA:
-} else {
-  setSuccess(true);
-}
+**De:**
+```tsx
+className={`flex flex-col items-center gap-1 px-4 py-2 rounded-full transition-all duration-300 ${
+  isActive 
+    ? "gradient-bg text-white scale-110 shadow-lg shadow-primary/30" 
+    : "text-muted-foreground hover:text-foreground hover:scale-105"
+}`}
 ```
 
-## Tela de Sucesso (ja implementada)
-
-A tela exibe:
-- Logo do app
-- Titulo "Cadastro realizado!"
-- Mensagem de confirmacao
-- Botao "Ir para Login"
-
-## Ajuste na Mensagem
-
-Como nao usamos mais email de confirmacao (autenticacao por username), vamos atualizar a mensagem da tela de sucesso:
-
-**Modificar linhas 82-85:**
-
-```typescript
-// DE:
-<CardTitle className="text-2xl gradient-text">Cadastro realizado!</CardTitle>
-<CardDescription>
-  Enviamos um email de confirmação para você. Por favor, verifique sua caixa de entrada.
-</CardDescription>
-
-// PARA:
-<CardTitle className="text-2xl gradient-text">Cadastro realizado!</CardTitle>
-<CardDescription>
-  Sua conta foi criada com sucesso. Agora voce pode fazer login.
-</CardDescription>
+**Para:**
+```tsx
+className={`flex flex-col items-center justify-center transition-all duration-300 ${
+  isActive 
+    ? "w-14 h-14 gradient-bg text-white rounded-full scale-110 shadow-lg shadow-primary/30" 
+    : "w-14 h-14 text-muted-foreground hover:text-foreground hover:scale-105"
+}`}
 ```
 
-## Resumo
+### O que muda:
+- Removo `gap-1 px-4 py-2` que criavam a forma oval
+- Adiciono `w-14 h-14` (56px x 56px) para garantir dimensões iguais
+- Adiciono `justify-center` para centralizar o conteúdo verticalmente
+- O `rounded-full` agora criará um círculo perfeito porque largura = altura
 
-| Alteracao | Linha | Descricao |
-|-----------|-------|-----------|
-| onSubmit | 68 | Trocar `navigate('/login')` por `setSuccess(true)` |
-| CardDescription | 83-85 | Atualizar mensagem removendo referencia a email |
-
-## Resultado
-
-Apos cadastro bem-sucedido, usuario vera uma tela bonita confirmando que a conta foi criada, com um botao para ir ao login quando estiver pronto.
+### Resultado Visual:
+- Círculo perfeito de 56px de diâmetro quando ativo
+- Mesmas dimensões quando inativo para manter consistência
+- Animação de scale continua funcionando normalmente
