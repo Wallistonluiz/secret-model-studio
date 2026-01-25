@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import logo from "@/assets/logo-new.png";
+import logoDesktop from "@/assets/logo-desktop.webp";
 import modelFeatured from "@/assets/model-featured.jpg";
 import story1 from "@/assets/story-1.jpg";
 import story2 from "@/assets/story-2.jpg";
@@ -46,9 +47,9 @@ const Index = () => {
           <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
             <div className="flex items-center gap-1">
               <img 
-                src={logo} 
+                src={logoDesktop} 
                 alt="Secret Models" 
-                className="w-24 h-24 object-contain flex-shrink-0" 
+                className="h-20 object-contain flex-shrink-0" 
               />
               <div className="w-[500px]">
                 <SearchPrompt />
