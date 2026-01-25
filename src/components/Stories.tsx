@@ -9,6 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Story {
   id: number;
@@ -76,6 +77,22 @@ const StoryAvatar = ({ story }: { story: Story }) => {
 };
 
 const Stories = () => {
+  const isMobile = useIsMobile();
+
+  // Desktop: layout fixo e centralizado
+  if (!isMobile) {
+    return (
+      <div className="w-full animate-fade-in py-2">
+        <div className="flex justify-center gap-3">
+          {storiesData.map((story) => (
+            <StoryAvatar key={story.id} story={story} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Mobile: carrossel com swipe
   return (
     <div className="w-full animate-fade-in px-4 py-2">
       <Carousel
