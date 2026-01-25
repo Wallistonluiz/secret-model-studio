@@ -435,17 +435,20 @@ const ModelProfile = () => {
             orientation="vertical"
             opts={{
               startIndex: selectedPhoto || 0,
-              loop: true,
+              loop: false,
+              dragFree: false,
+              containScroll: "trimSnaps",
+              align: "center",
             }}
             className="w-full h-full"
           >
-            <CarouselContent className="h-full mt-0">
+            <CarouselContent className="h-[100dvh] mt-0 flex-col">
               {model.gallery.map((photo, index) => (
-                <CarouselItem key={index} className="h-full flex items-center justify-center pt-0">
+                <CarouselItem key={index} className="h-[100dvh] min-h-0 flex items-center justify-center pt-0 basis-full shrink-0 grow-0">
                   <img
                     src={photo}
                     alt={`Foto ${index + 1}`}
-                    className="max-h-[90vh] max-w-full object-contain"
+                    className="max-h-[90vh] max-w-full object-contain select-none pointer-events-none"
                   />
                 </CarouselItem>
               ))}
