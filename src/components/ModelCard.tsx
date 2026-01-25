@@ -32,13 +32,15 @@ interface ModelCardProps {
   age?: number;
   image?: string;
   initialLikes?: number;
+  description?: string;
 }
 
 const ModelCard = ({ 
   name = "Isabella", 
   age = 23, 
   image = modelImage,
-  initialLikes = Math.floor(Math.random() * 500) + 100
+  initialLikes = Math.floor(Math.random() * 500) + 100,
+  description = "Disponível para ensaios exclusivos ✨"
 }: ModelCardProps) => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
@@ -134,6 +136,9 @@ const ModelCard = ({
           <Send size={24} />
         </button>
       </div>
+      
+      {/* Description */}
+      <p className="text-sm text-muted-foreground px-2 mt-2">{description}</p>
 
       {/* Comments Modal */}
       <Dialog open={isCommentsOpen} onOpenChange={setIsCommentsOpen}>
