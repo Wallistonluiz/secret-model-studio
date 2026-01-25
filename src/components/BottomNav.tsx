@@ -1,4 +1,4 @@
-import { Home, Search, Heart, LogOut } from "lucide-react";
+import { Home, Search, Heart, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -103,12 +103,19 @@ const BottomNav = () => {
               }`}
             >
               {isAvatar ? (
-                <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
-                  <AvatarImage src={avatarUrl || ""} alt="Perfil" />
-                  <AvatarFallback className="bg-muted text-xs">
-                    {user?.email?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
+                user ? (
+                  <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
+                    <AvatarImage src={avatarUrl || ""} alt="Perfil" />
+                    <AvatarFallback className="bg-muted text-xs">
+                      {user.email?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <>
+                    <User className="w-5 h-5" />
+                    <span className="text-xs font-medium">Perfil</span>
+                  </>
+                )
               ) : (
                 <>
                   <item.icon className="w-5 h-5" />
