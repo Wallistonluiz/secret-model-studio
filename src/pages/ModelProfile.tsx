@@ -429,18 +429,19 @@ const ModelProfile = () => {
             </button>
           </div>
 
-          {/* Draggable Carousel */}
+          {/* Draggable Carousel - Vertical */}
           <Carousel
             setApi={setCarouselApi}
+            orientation="vertical"
             opts={{
               startIndex: selectedPhoto || 0,
               loop: true,
             }}
             className="w-full h-full"
           >
-            <CarouselContent className="h-full ml-0">
+            <CarouselContent className="h-full mt-0">
               {model.gallery.map((photo, index) => (
-                <CarouselItem key={index} className="h-full flex items-center justify-center pl-0">
+                <CarouselItem key={index} className="h-full flex items-center justify-center pt-0">
                   <img
                     src={photo}
                     alt={`Foto ${index + 1}`}
