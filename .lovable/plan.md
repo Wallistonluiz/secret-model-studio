@@ -1,227 +1,115 @@
 
-# Plano: Pagina "Meu Perfil" Estilo Instagram
+# Plano: Autenticacao por Username + Senha
 
 ## Visao Geral
 
-Criar uma pagina de perfil pessoal para usuarios logados, seguindo o layout do Instagram como referencia. O botao "Editar perfil" levara para uma pagina separada de edicao.
+Remover o campo de email visivel e usar username + senha para autenticacao. Internamente, o sistema vai gerar um email automatico baseado no username para satisfazer os requisitos do Supabase Auth.
 
-## Layout da Pagina (baseado na referencia do Instagram)
+## Como Vai Funcionar
 
 ```text
-+------------------------------------------+
-|  [<-]                    [@] [=] (menu)  |
-+------------------------------------------+
-|                                          |
-|    [AVATAR]       username               |
-|     (80px)        Nome de Exibicao       |
-|                                          |
-|   0 posts   0 seguidores   0 seguindo    |
-|                                          |
-|   Bio do usuario aqui...                 |
-|                                          |
-+------------------------------------------+
-|                                          |
-|  [Editar perfil]  [Compartilhar perfil]  |
-|                                          |
-+------------------------------------------+
-|                                          |
-|  [+] Destaques (stories circulares)      |
-|  Novo                                    |
-|                                          |
-+------------------------------------------+
-|  [Grid] [Reels] [Salvos] [Marcados]      |
-|  ======================================  |
-|                                          |
-|  +--------+ +--------+ +--------+        |
-|  |        | |        | |        |        |
-|  | Foto 1 | | Foto 2 | | Foto 3 |        |
-|  |        | |        | |        |        |
-|  +--------+ +--------+ +--------+        |
-|                                          |
-|  (ou mensagem: "Nenhuma foto ainda")     |
-|                                          |
-+------------------------------------------+
-|                                          |
-|  [BottomNav]                             |
-+------------------------------------------+
+CADASTRO:
+Usuario digita: username, nome, genero, senha
+Sistema gera: username@secretmodels.app (invisivel)
+Supabase recebe: email gerado + senha
+
+LOGIN:
+Usuario digita: username + senha
+Sistema converte: username -> username@secretmodels.app
+Supabase valida: email gerado + senha
 ```
 
-## Arquivos a Serem Criados/Modificados
+## Arquivos a Modificar
 
-### 1. CRIAR: src/pages/MyProfile.tsx
+### 1. src/pages/Register.tsx
 
-Nova pagina com estrutura estilo Instagram:
+**Remover:**
+- Campo de email do formulario
+- Validacao de email no schema
 
-**Secao Header:**
-- Botao voltar (seta esquerda)
-- Username do usuario
-- Icone de menu/configuracoes (futuro)
+**Modificar:**
+- Schema com apenas: username, displayName, gender, password (todos obrigatorios)
+- No onSubmit: gerar email automatico `${username}@secretmodels.app`
 
-**Secao Avatar + Info:**
-- Avatar circular grande (80px) a esquerda
-- Username e nome de exibicao a direita
-- Estatisticas: posts, seguidores, seguindo (inicialmente zerados)
-- Bio do usuario (se existir)
-
-**Secao Botoes:**
-- Botao "Editar perfil" (leva para /edit-profile)
-- Botao "Compartilhar perfil" (ou outro secundario)
-
-**Secao Destaques:**
-- Circulo com "+" para criar novo destaque
-- Lista horizontal de destaques (futuro)
-
-**Secao Abas de Conteudo:**
-- Grid de fotos (icone de grade)
-- Reels (icone de video)
-- Salvos (icone de bookmark)
-- Marcados (icone de pessoa)
-- Conteudo inicial: mensagem "Nenhuma publicacao ainda"
-
-### 2. CRIAR: src/pages/EditProfile.tsx
-
-Pagina de edicao do perfil (onde vai a escolha de tipo de conta):
-
-**Campos Editaveis:**
-- Foto de perfil (avatar)
-- Nome de exibicao
-- Username (apenas leitura ou editavel com validacao)
-- Bio
-- Tipo de conta (Usuario comum / Modelo)
-
-**Campos Condicionais para Modelo:**
-- Localizacao
-- Idade
-- Especialidades
-
-### 3. MODIFICAR: src/App.tsx
-
-Adicionar novas rotas:
 ```typescript
-import MyProfile from "./pages/MyProfile";
-import EditProfile from "./pages/EditProfile";
+// Schema atualizado
+const registerSchema = z.object({
+  username: z.string().trim()
+    .min(3, { message: 'Username deve ter no minimo 3 caracteres' })
+    .max(20, { message: 'Username deve ter no maximo 20 caracteres' })
+    .regex(/^[a-zA-Z0-9_]+$/, { message: 'Username so pode conter letras, numeros e underscore' }),
+  displayName: z.string().trim()
+    .min(2, { message: 'Nome deve ter no minimo 2 caracteres' })
+    .max(50, { message: 'Nome deve ter no maximo 50 caracteres' }),
+  gender: z.enum(['male', 'female'], { required_error: 'Selecione seu genero' }),
+  password: z.string().min(6, { message: 'Senha deve ter no minimo 6 caracteres' }),
+});
 
-// Rotas:
-<Route path="/profile" element={<MyProfile />} />
-<Route path="/edit-profile" element={<EditProfile />} />
+// No onSubmit
+const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
+await signUp(generatedEmail, data.password, { ... });
 ```
 
-### 4. MODIFICAR: src/components/BottomNav.tsx
+### 2. src/pages/Login.tsx
 
-Atualizar navegacao do botao "Perfil":
+**Modificar:**
+- Trocar campo "Email" por "Username"
+- Schema validar username ao inves de email
+- No onSubmit: converter username para email gerado
+
 ```typescript
-if (label === "Perfil") {
-  if (user) {
-    navigate("/profile");  // Navegar para Meu Perfil
-  } else {
-    navigate("/login");
-  }
-}
+// Schema atualizado
+const loginSchema = z.object({
+  username: z.string().trim()
+    .min(3, { message: 'Username deve ter no minimo 3 caracteres' }),
+  password: z.string().min(6, { message: 'Senha deve ter no minimo 6 caracteres' }),
+});
+
+// No onSubmit
+const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
+await signIn(generatedEmail, data.password);
+
+// Mensagem de erro atualizada
+setError('Username ou senha incorretos');
 ```
 
-## Alteracoes no Banco de Dados
+## Campos do Formulario de Cadastro (ordem)
 
-### Adicionar campos na tabela profiles:
+| Campo | Label | Tipo | Obrigatorio |
+|-------|-------|------|-------------|
+| username | Username | text | Sim |
+| displayName | Nome de Exibicao | text | Sim |
+| gender | Genero | radio (Feminino/Masculino) | Sim |
+| password | Senha | password | Sim |
 
-```sql
-ALTER TABLE public.profiles
-ADD COLUMN IF NOT EXISTS user_type TEXT DEFAULT 'user' 
-  CHECK (user_type IN ('user', 'model')),
-ADD COLUMN IF NOT EXISTS bio TEXT,
-ADD COLUMN IF NOT EXISTS location TEXT,
-ADD COLUMN IF NOT EXISTS age INTEGER,
-ADD COLUMN IF NOT EXISTS avatar_url TEXT;
-```
+## Campos do Formulario de Login
+
+| Campo | Label | Tipo |
+|-------|-------|------|
+| username | Username | text |
+| password | Senha | password |
 
 ## Detalhes Tecnicos
 
-### Estrutura do MyProfile.tsx:
+### Geracao de Email Automatico
+- Formato: `{username}@secretmodels.app`
+- Username convertido para minusculas para consistencia
+- Email gerado nao e visivel para o usuario em nenhum momento
 
-```typescript
-const MyProfile = () => {
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+### Tratamento de Erros
+- "already registered" -> "Este username ja esta cadastrado"
+- "Invalid login credentials" -> "Username ou senha incorretos"
 
-  // Buscar perfil do usuario
-  useEffect(() => {
-    if (user) fetchProfile();
-  }, [user]);
+## Resumo das Alteracoes
 
-  // Protecao de rota
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/login");
-    }
-  }, [user, authLoading]);
-
-  const fetchProfile = async () => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
-    
-    if (data) setProfile(data);
-    setLoading(false);
-  };
-
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      {/* Avatar + Stats */}
-      {/* Bio */}
-      {/* Botoes */}
-      {/* Destaques */}
-      {/* Tabs de conteudo */}
-      <BottomNav />
-    </div>
-  );
-};
-```
-
-### Componentes UI Utilizados:
-
-- Avatar, AvatarImage, AvatarFallback
-- Button
-- Tabs, TabsList, TabsTrigger, TabsContent
-- Separator
-- Icons: Grid3X3, Film, Bookmark, UserCircle, Settings, Plus, ArrowLeft
-
-### Estilizacao:
-
-- Seguir design system existente (glass effects, cores roxa/rosa)
-- Layout mobile-first
-- Avatar com borda gradiente (gradient-border)
-- Estatisticas em linha horizontal
-- Grid de 3 colunas para fotos
-
-## Fluxo do Usuario
-
-1. Usuario clica em "Perfil" no BottomNav
-2. Se nao logado -> vai para Login
-3. Se logado -> abre MyProfile
-4. Usuario ve seu perfil (avatar, nome, stats, bio)
-5. Clica em "Editar perfil" -> vai para EditProfile
-6. Edita informacoes e salva
-7. Retorna ao MyProfile atualizado
-
-## Resumo das Tarefas
-
-| Ordem | Tarefa | Tipo | Arquivo |
-|-------|--------|------|---------|
-| 1 | Migracao SQL para novos campos | Banco | Supabase Migration |
-| 2 | Criar pagina Meu Perfil | Criar | src/pages/MyProfile.tsx |
-| 3 | Criar pagina Editar Perfil | Criar | src/pages/EditProfile.tsx |
-| 4 | Adicionar rotas | Modificar | src/App.tsx |
-| 5 | Atualizar navegacao | Modificar | src/components/BottomNav.tsx |
+| Arquivo | Alteracao |
+|---------|-----------|
+| src/pages/Register.tsx | Remover campo email, gerar email automatico do username |
+| src/pages/Login.tsx | Trocar campo email por username, converter para email no login |
 
 ## Resultado Final
 
-- Pagina de perfil estilo Instagram para usuarios logados
-- Visualizacao de avatar, nome, username, bio e estatisticas
-- Botao "Editar perfil" que leva para pagina de edicao
-- Na pagina de edicao: escolha de tipo de conta (Usuario/Modelo)
-- Campos extras condicionais para modelos
-- Design consistente com o resto do app (dark mode, glassmorphism)
+- Usuario ve apenas: Username, Nome, Genero, Senha no cadastro
+- Usuario ve apenas: Username, Senha no login
+- Email e gerado automaticamente e fica invisivel
+- Sistema funciona normalmente com Supabase Auth
