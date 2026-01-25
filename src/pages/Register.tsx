@@ -60,8 +60,8 @@ const Register = () => {
       }
       setIsLoading(false);
     } else {
-      setSuccess(true);
-      setIsLoading(false);
+      // Com confirmação de email desativada, redireciona direto para home
+      navigate('/home');
     }
   };
 
