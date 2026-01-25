@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import modelImage from "@/assets/model-featured.jpg";
 import verifiedIcon from "@/assets/usuario-verificado.png";
 import verifiedBadge from "@/assets/verificado.webp";
@@ -28,6 +29,7 @@ const initialComments: Comment[] = [
 ];
 
 interface ModelCardProps {
+  id?: number;
   name?: string;
   age?: number;
   image?: string;
@@ -36,12 +38,14 @@ interface ModelCardProps {
 }
 
 const ModelCard = ({ 
+  id = 1,
   name = "Isabella", 
   age = 23, 
   image = modelImage,
   initialLikes = Math.floor(Math.random() * 500) + 100,
   description = "Disponível para ensaios exclusivos ✨"
 }: ModelCardProps) => {
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -84,7 +88,8 @@ const ModelCard = ({
         <img
           src={image}
           alt={name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover cursor-pointer"
+          onClick={() => navigate(`/model/${id}`)}
         />
         
         {/* Gradient overlay */}

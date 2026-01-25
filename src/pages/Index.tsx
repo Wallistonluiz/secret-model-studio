@@ -67,9 +67,10 @@ const Index = () => {
         
         {/* Model Cards */}
         <div className="flex flex-col gap-6">
-          {models.map((model, index) => (
+          {models.map((model) => (
             <ModelCard
               key={model.id}
+              id={model.id}
               name={model.name}
               age={model.age}
               image={model.image}
