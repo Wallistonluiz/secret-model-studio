@@ -1,7 +1,7 @@
 import { useState } from "react";
 import modelImage from "@/assets/model-featured.jpg";
 import verifiedIcon from "@/assets/usuario-verificado.png";
-import verifiedBadge from "@/assets/verificado-badge.png";
+import verifiedBadge from "@/assets/verificado.webp";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import {
   Dialog,
