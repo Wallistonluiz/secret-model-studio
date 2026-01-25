@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ModelProfile from "./pages/ModelProfile";
+import MyProfile from "./pages/MyProfile";
+import EditProfile from "./pages/EditProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Index />} />
             <Route path="/model/:id" element={<ModelProfile />} />
+            <Route path="/profile" element={<MyProfile />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
