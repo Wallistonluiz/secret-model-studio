@@ -1,13 +1,13 @@
 import { Home, Search, Heart, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const BottomNav = () => {
-  const [active, setActive] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, signOut } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -33,9 +33,19 @@ const BottomNav = () => {
     fetchAvatar();
   }, [user]);
 
-  const handleNavClick = async (index: number, label: string) => {
-    setActive(index);
-    
+  // Determina qual item está ativo baseado na rota atual
+  const getActiveIndex = () => {
+    const path = location.pathname;
+    if (path === "/home" || path === "/") return 0;
+    if (path === "/explorar") return 1;
+    if (path === "/favoritos") return 2;
+    if (path === "/profile" || path === "/edit-profile") return 3;
+    return 0;
+  };
+
+  const activeIndex = getActiveIndex();
+
+  const handleNavClick = async (label: string) => {
     switch (label) {
       case "Início":
         navigate("/home");
@@ -79,13 +89,13 @@ const BottomNav = () => {
     <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/10">
       <div className="flex items-center justify-around py-3 px-4 max-w-md mx-auto">
         {navItems.map((item, index) => {
-          const isActive = index === active;
+          const isActive = index === activeIndex;
           const isAvatar = item.icon === "avatar";
           
           return (
             <button
               key={item.label}
-              onClick={() => handleNavClick(index, item.label)}
+              onClick={() => handleNavClick(item.label)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-300 ${
                 isActive 
                   ? "gradient-bg text-white" 
