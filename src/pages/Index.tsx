@@ -14,11 +14,11 @@ import story3 from "@/assets/story-3.jpg";
 import story4 from "@/assets/story-4.jpg";
 
 const models = [
-  { id: 1, name: "Isabella", age: 23, image: modelFeatured },
-  { id: 2, name: "Sofia", age: 21, image: story1 },
-  { id: 3, name: "Valentina", age: 25, image: story2 },
-  { id: 4, name: "Camila", age: 22, image: story3 },
-  { id: 5, name: "Luna", age: 24, image: story4 },
+  { id: 1, name: "Isabella", age: 23, image: modelFeatured, description: "Disponível para ensaios exclusivos ✨" },
+  { id: 2, name: "Sofia", age: 21, image: story1, description: "Modelo profissional, 3 anos de experiência 📸" },
+  { id: 3, name: "Valentina", age: 25, image: story2, description: "Especialista em moda e beleza 💄" },
+  { id: 4, name: "Camila", age: 22, image: story3, description: "Apaixonada por fotografia artística 🎨" },
+  { id: 5, name: "Luna", age: 24, image: story4, description: "Disponível para campanhas publicitárias 🌟" },
 ];
 
 const Index = () => {
@@ -73,6 +73,7 @@ const Index = () => {
               name={model.name}
               age={model.age}
               image={model.image}
+              description={model.description}
             />
           ))}
         </div>
