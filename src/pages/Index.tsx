@@ -3,7 +3,9 @@ import Stories from "@/components/Stories";
 import SearchPrompt from "@/components/SearchPrompt";
 import ModelCard from "@/components/ModelCard";
 import BottomNav from "@/components/BottomNav";
+import { useIsMobile } from "@/hooks/use-mobile";
 
+import logo from "@/assets/logo.png";
 import modelFeatured from "@/assets/model-featured.jpg";
 import story1 from "@/assets/story-1.jpg";
 import story2 from "@/assets/story-2.jpg";
@@ -19,12 +21,29 @@ const models = [
 ];
 
 const Index = () => {
+  const isMobile = useIsMobile();
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      
-      {/* Stories */}
-      <Stories />
+      {isMobile ? (
+        // Mobile: Layout vertical original
+        <>
+          <Header />
+          <Stories />
+        </>
+      ) : (
+        // Desktop: Logo + Stories lado a lado
+        <div className="flex items-center px-6 py-4 gap-8">
+          <img 
+            src={logo} 
+            alt="Secret Models" 
+            className="w-48 h-48 object-contain flex-shrink-0" 
+          />
+          <div className="flex-1">
+            <Stories />
+          </div>
+        </div>
+      )}
       
       <main className="flex-1 px-4 pb-24 pt-4 overflow-y-auto">
         {/* Search Prompt */}
