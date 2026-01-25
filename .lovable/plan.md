@@ -1,24 +1,12 @@
 
+
 ## Resumo
-Corrigir o posicionamento para que apenas a logomarca desça 50 pixels, sem afetar o botão "Entrar" e a frase.
-
----
-
-## Problema Atual
-O `mt-[50px]` na logo está dentro de um container flexbox centralizado, o que empurra todos os elementos (botão e texto) para baixo junto com a logo.
+Abaixar a logomarca, o botão "Entrar" e o texto descritivo em 300 pixels para baixo, mantendo-os alinhados entre si.
 
 ---
 
 ## Solução
-Separar a logo do container do botão, posicionando-a de forma independente usando posicionamento absoluto.
-
----
-
-## Mudanças em Splash.tsx
-
-1. **Remover a logo do container central** (que contém o botão e texto)
-2. **Criar um container separado para a logo** com posicionamento absoluto no topo
-3. **Ajustar a posição da logo** para ficar 50px mais abaixo do que estava originalmente
+Unificar todos os elementos (logo, botão e texto) em um único container centralizado e adicionar um `padding-top` ou `margin-top` de 300px para deslocar o conjunto inteiro.
 
 ---
 
@@ -27,31 +15,44 @@ Separar a logo do container do botão, posicionando-a de forma independente usan
 ```text
 ┌─────────────────────────────────────┐
 │                                     │
-│       [LOGO - posição absoluta]     │  ← Container separado, top ajustável
 │                                     │
 │                                     │
-│      ┌─────────────────────┐        │
-│      │       Entrar        │        │  ← Container central (não muda)
+│                                     │
+│           [LOGO]                    │
+│      ┌─────────────────────┐        │  ← Conjunto descido 300px
+│      │       Entrar        │        │
 │      └─────────────────────┘        │
 │   "Nosso site oferece conteudo..."  │
 │                                     │
+│         [Progress Bar]              │
 └─────────────────────────────────────┘
 ```
 
 ---
 
-## Codigo Proposto
+## Mudanças em Splash.tsx
+
+1. **Remover o container separado da logo** (linhas 38-41)
+2. **Mover a logo para dentro do container do botão/texto** (linhas 43-54)
+3. **Adicionar `mt-[300px]`** ao container unificado para descer todos os elementos juntos
+
+---
+
+## Código Proposto
 
 ```tsx
-{/* Logo - posição independente */}
-<div className="absolute top-0 left-0 right-0 flex justify-center z-10 pt-[180px]">
-  <img src={logo} alt="Secret Models" className="h-40 object-contain" />
-</div>
-
-{/* Botão e descrição - posição centralizada (sem a logo) */}
-<div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-  <Button ...>Entrar</Button>
-  <p>Nosso site oferece conteúdo exclusivo</p>
+{/* Logo, Botão e descrição - todos juntos, descidos 300px */}
+<div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-[300px]">
+  <img src={logo} alt="Secret Models" className="h-40 object-contain mb-8" />
+  <Button
+    onClick={handleEnter}
+    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg font-semibold rounded-full shadow-lg shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+  >
+    Entrar
+  </Button>
+  <p className="mt-4 text-white/70 text-sm text-center px-8">
+    Nosso site oferece conteúdo exclusivo
+  </p>
 </div>
 ```
 
@@ -61,4 +62,5 @@ Separar a logo do container do botão, posicionando-a de forma independente usan
 
 | Arquivo | Alteração |
 |---------|-----------|
-| `src/pages/Splash.tsx` | Separar logo em container próprio com posição absoluta |
+| `src/pages/Splash.tsx` | Unificar logo com botão/texto em um container e adicionar `mt-[300px]` |
+
