@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import modelImage from "@/assets/model-featured.jpg";
-import verifiedIcon from "@/assets/usuario-verificado.png";
+
 import verifiedBadge from "@/assets/verificado.webp";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import {
@@ -97,12 +97,6 @@ const ModelCard = ({
       onClick={handleCardClick}
     >
       <div className="relative rounded-3xl overflow-hidden aspect-[3/4] glass gradient-border">
-        {/* Verified badge */}
-        <img 
-          src={verifiedIcon} 
-          alt="Usuário verificado" 
-          className="absolute top-3 right-3 w-8 h-8 z-10 pointer-events-none"
-        />
         <img
           src={image}
           alt={name}
