@@ -1,5 +1,5 @@
 import logo from "@/assets/logo.png";
-import logoMobile from "@/assets/logo-mobile.png";
+import logoMobile from "@/assets/logo-mobile-text.webp";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
