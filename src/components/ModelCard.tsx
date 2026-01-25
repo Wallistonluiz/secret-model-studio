@@ -1,3 +1,4 @@
+import { useState } from "react";
 import modelImage from "@/assets/model-featured.jpg";
 import { Heart, MessageCircle, Send } from "lucide-react";
 
@@ -5,13 +6,23 @@ interface ModelCardProps {
   name?: string;
   age?: number;
   image?: string;
+  initialLikes?: number;
 }
 
 const ModelCard = ({ 
   name = "Isabella", 
   age = 23, 
-  image = modelImage 
+  image = modelImage,
+  initialLikes = Math.floor(Math.random() * 500) + 100
 }: ModelCardProps) => {
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(initialLikes);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikes(prev => liked ? prev - 1 : prev + 1);
+  };
+
   return (
     <div className="relative w-full max-w-sm mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
       <div className="relative rounded-3xl overflow-hidden aspect-[3/4] glass gradient-border">
@@ -36,8 +47,21 @@ const ModelCard = ({
       
       {/* Action buttons */}
       <div className="flex items-center gap-4 mt-3 px-2">
-        <button className="text-foreground hover:text-primary transition-colors">
-          <Heart size={24} />
+        <button 
+          onClick={handleLike}
+          className="flex items-center gap-1 transition-all duration-200 active:scale-125"
+        >
+          <Heart 
+            size={24} 
+            className={`transition-all duration-300 ${
+              liked 
+                ? "fill-red-500 text-red-500 scale-110" 
+                : "text-foreground hover:text-red-500"
+            }`}
+          />
+          <span className={`text-sm ${liked ? "text-red-500" : "text-muted-foreground"}`}>
+            {likes}
+          </span>
         </button>
         <button className="text-foreground hover:text-primary transition-colors">
           <MessageCircle size={24} />
