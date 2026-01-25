@@ -1,13 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+// Supabase credentials (anon key is public/publishable - safe to include in code)
+const supabaseUrl = 'https://exluhngzdhrmsjfheucn.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bHVobmd6ZGhybXNqZmhldWNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMjg5NDIsImV4cCI6MjA4NDkwNDk0Mn0.7TNHtLhR0JHy7eld4muJfbvLJZkDBflaMSmni6KPuGA';
 
-/**
- * IMPORTANT:
- * In Lovable, secrets added via the Secrets UI may not be exposed to the browser runtime.
- * If these values are missing at runtime, we must not initialize the client (it throws).
- */
-export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
-
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = true;

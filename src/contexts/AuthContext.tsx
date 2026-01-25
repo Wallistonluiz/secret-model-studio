@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { isSupabaseConfigured, supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   user: User | null;
@@ -31,12 +31,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) {
-      // Avoid crashing the app when env vars are not exposed to the browser.
-      setLoading(false);
-      return;
-    }
-
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -57,9 +51,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    if (!supabase) {
-      return { error: ({ message: 'Autenticação não configurada (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).' } as AuthError) };
-    }
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -72,9 +63,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     password: string,
     metadata?: { username?: string; display_name?: string }
   ) => {
-    if (!supabase) {
-      return { error: ({ message: 'Autenticação não configurada (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).' } as AuthError) };
-    }
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -87,7 +75,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    if (!supabase) return;
     await supabase.auth.signOut();
   };
 
