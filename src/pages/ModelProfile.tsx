@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MessageCircle, Star, Users, Image, MapPin, Globe, Heart, X } from "lucide-react";
+import { ArrowLeft, MessageCircle, Star, Users, Image, MapPin, Globe, Heart, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
 import verifiedBadge from "@/assets/verificado.webp";
+import { useAuth } from "@/contexts/AuthContext";
 
 import modelFeatured from "@/assets/model-featured.jpg";
 import story1 from "@/assets/story-1.jpg";
@@ -143,6 +144,7 @@ const modelsData: Record<number, ModelData> = {
 const ModelProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -151,6 +153,7 @@ const ModelProfile = () => {
   const modelId = parseInt(id || "1");
   const model = modelsData[modelId] || modelsData[1];
 
+  // Carousel effects
   useEffect(() => {
     if (!carouselApi) return;
 
@@ -169,6 +172,27 @@ const ModelProfile = () => {
       carouselApi.scrollTo(selectedPhoto, true);
     }
   }, [carouselApi, selectedPhoto]);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
+  // Show loading while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
