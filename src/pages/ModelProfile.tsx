@@ -255,8 +255,15 @@ const ModelProfile = () => {
           <Button
             variant={isFollowing ? "secondary" : "outline"}
             onClick={() => setIsFollowing(!isFollowing)}
-            className="flex-1 h-9"
+            className="flex-1 h-9 gap-2"
           >
+            <Heart 
+              size={18} 
+              className={`transition-all duration-300 ${isFollowing ? "fill-primary text-primary scale-125" : "scale-100"}`}
+              style={{
+                animation: isFollowing ? "heartPop 0.3s ease-out" : "none"
+              }}
+            />
             {isFollowing ? "Seguindo" : "Seguir"}
           </Button>
           

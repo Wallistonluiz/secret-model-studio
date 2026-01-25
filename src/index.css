@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1.25); }
+}
+@tailwind components;
+@tailwind utilities;
+
 @layer base {
   :root {
     --background: 270 50% 6%;
