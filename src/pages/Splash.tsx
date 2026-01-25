@@ -36,7 +36,7 @@ const Splash = () => {
       />
 
       {/* Logo, Botão e descrição - posicionados com translate */}
-      <div className="absolute inset-x-0 top-1/2 flex flex-col items-center z-10 translate-y-[100px]">
+      <div className="absolute inset-x-0 top-1/2 flex flex-col items-center z-10 translate-y-[60px] sm:translate-y-[80px] md:translate-y-[100px]">
         <img src={logo} alt="Secret Models" className="h-40 object-contain mb-1 translate-y-[30px]" />
         <Button
           onClick={handleEnter}
