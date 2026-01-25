@@ -1,12 +1,37 @@
-import { Home, Search, User, Heart, LogOut } from "lucide-react";
-import { useState } from "react";
+import { Home, Search, Heart, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const BottomNav = () => {
   const [active, setActive] = useState(0);
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Buscar avatar do usuário logado
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (!user) {
+        setAvatarUrl(null);
+        return;
+      }
+      
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      
+      if (data?.avatar_url) {
+        setAvatarUrl(data.avatar_url);
+      }
+    };
+
+    fetchAvatar();
+  }, [user]);
 
   const handleNavClick = async (index: number, label: string) => {
     setActive(index);
@@ -28,22 +53,22 @@ const BottomNav = () => {
         { icon: Home, label: "Início" },
         { icon: Search, label: "Explorar" },
         { icon: Heart, label: "Favoritos" },
-        { icon: User, label: "Perfil" },
+        { icon: "avatar", label: "Perfil" },
         { icon: LogOut, label: "Sair" },
       ]
     : [
         { icon: Home, label: "Início" },
         { icon: Search, label: "Explorar" },
         { icon: Heart, label: "Favoritos" },
-        { icon: User, label: "Perfil" },
+        { icon: "avatar", label: "Perfil" },
       ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/10">
       <div className="flex items-center justify-around py-3 px-4 max-w-md mx-auto">
         {navItems.map((item, index) => {
-          const Icon = item.icon;
           const isActive = index === active;
+          const isAvatar = item.icon === "avatar";
           
           return (
             <button
@@ -55,7 +80,16 @@ const BottomNav = () => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="w-5 h-5" />
+              {isAvatar ? (
+                <Avatar className="w-5 h-5">
+                  <AvatarImage src={avatarUrl || ""} alt="Perfil" />
+                  <AvatarFallback className="bg-muted text-[10px]">
+                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <item.icon className="w-5 h-5" />
+              )}
               <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
