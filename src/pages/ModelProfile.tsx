@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, MessageCircle, Star, Users, Image, MapPin, Globe, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -147,9 +147,6 @@ const ModelProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [swipeY, setSwipeY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const touchStartY = useRef(0);
   
   const modelId = parseInt(id || "1");
   const model = modelsData[modelId] || modelsData[1];
@@ -172,27 +169,6 @@ const ModelProfile = () => {
       carouselApi.scrollTo(selectedPhoto, true);
     }
   }, [carouselApi, selectedPhoto]);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    setIsDragging(true);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const deltaY = e.touches[0].clientY - touchStartY.current;
-    if (deltaY > 0) {
-      setSwipeY(deltaY);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    if (swipeY > 150) {
-      setSelectedPhoto(null);
-    }
-    setSwipeY(0);
-  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -395,16 +371,7 @@ const ModelProfile = () => {
 
       {/* Fullscreen Gallery Modal */}
       <Dialog open={selectedPhoto !== null} onOpenChange={() => setSelectedPhoto(null)}>
-        <DialogContent 
-          className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button]:hidden transition-all duration-200"
-          style={{ 
-            transform: `translateY(${swipeY}px)`,
-            opacity: swipeY > 0 ? Math.max(0.5, 1 - swipeY / 300) : 1
-          }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+        <DialogContent className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button.dialog-close]:hidden">
           {/* Close button */}
           <div className="absolute top-6 right-6 z-50">
             <button 
