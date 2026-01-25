@@ -81,7 +81,7 @@ const BottomNav = () => {
               }`}
             >
               {isAvatar ? (
-                <Avatar className={`${isActive ? "w-8 h-8 ring-2 ring-white" : "w-7 h-7"}`}>
+                <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
                   <AvatarImage src={avatarUrl || ""} alt="Perfil" />
                   <AvatarFallback className="bg-muted text-xs">
                     {user?.email?.charAt(0).toUpperCase() || "U"}
