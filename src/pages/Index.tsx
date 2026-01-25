@@ -44,7 +44,7 @@ const Index = () => {
         {/* Desktop: Logo + Search centralizados e colados */}
         {!isMobile && (
           <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
               <img 
                 src={logo} 
                 alt="Secret Models" 
