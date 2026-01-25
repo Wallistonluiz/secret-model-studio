@@ -65,7 +65,7 @@ const BottomNav = () => {
         break;
       case "Sair":
         await signOut();
-        navigate("/");
+        navigate("/home");
         break;
     }
   };
