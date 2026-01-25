@@ -81,16 +81,18 @@ const BottomNav = () => {
               }`}
             >
               {isAvatar ? (
-                <Avatar className="w-5 h-5">
+                <Avatar className={`${isActive ? "w-8 h-8 ring-2 ring-white" : "w-7 h-7"}`}>
                   <AvatarImage src={avatarUrl || ""} alt="Perfil" />
-                  <AvatarFallback className="bg-muted text-[10px]">
+                  <AvatarFallback className="bg-muted text-xs">
                     {user?.email?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
               ) : (
-                <item.icon className="w-5 h-5" />
+                <>
+                  <item.icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </>
               )}
-              <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}
