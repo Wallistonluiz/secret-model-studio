@@ -1,0 +1,41 @@
+# Dependencias - serao instaladas no build
+node_modules
+
+# Arquivos de build local
+dist
+build
+
+# Git
+.git
+.gitignore
+
+# Logs
+*.log
+npm-debug.log*
+
+# Arquivos de ambiente local
+.env
+.env.local
+.env.*.local
+
+# IDE e editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentacao (nao precisa no container)
+README.md
+*.md
+
+# Testes
+coverage
+*.test.ts
+*.spec.ts
+
+# Arquivos do Lovable
+.lovable
