@@ -1,5 +1,6 @@
 import { useState } from "react";
 import modelImage from "@/assets/model-featured.jpg";
+import verifiedIcon from "@/assets/usuario-verificado.png";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import {
   Dialog,
@@ -71,6 +72,12 @@ const ModelCard = ({
   return (
     <div className="relative w-full max-w-sm mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
       <div className="relative rounded-3xl overflow-hidden aspect-[3/4] glass gradient-border">
+        {/* Verified badge */}
+        <img 
+          src={verifiedIcon} 
+          alt="Usuário verificado" 
+          className="absolute top-3 right-3 w-8 h-8 z-10"
+        />
         <img
           src={image}
           alt={name}
