@@ -7,7 +7,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, metadata?: { username?: string; display_name?: string }) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string, metadata?: { username?: string; display_name?: string; gender?: string }) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signUp = async (
     email: string,
     password: string,
-    metadata?: { username?: string; display_name?: string }
+    metadata?: { username?: string; display_name?: string; gender?: string }
   ) => {
     const { error } = await supabase.auth.signUp({
       email,
