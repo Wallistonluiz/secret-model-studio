@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center">
-        <img src={logo} alt="Secret Models" className="w-20 h-20 object-contain" />
+        <img src={logo} alt="Secret Models" className="w-28 h-28 object-contain" />
       </div>
       
       <Button 
