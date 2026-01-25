@@ -1,40 +1,105 @@
 
-# Plano: Botões de Navegação com Círculo Perfeito
 
-## Problema Identificado
-Atualmente o botão usa `px-4 py-2` (padding horizontal maior que vertical), o que cria uma forma oval mesmo com `rounded-full`. Para um círculo perfeito, precisamos dimensões iguais em todos os eixos.
+# Plano: Duplo Clique para Curtir nos Cards
 
-## Solução
+## Objetivo
+Implementar um sistema onde:
+- **1 clique** = Navega para o perfil da modelo
+- **2 cliques rápidos (duplo clique)** = Curte automaticamente (estilo Instagram)
 
-Vou modificar o estilo do botão ativo para usar dimensões fixas e iguais, garantindo um círculo perfeito:
+## Solução Técnica
 
-### Mudanças no arquivo `src/components/BottomNav.tsx`:
+### Lógica de Detecção de Clique
 
-**De:**
+Vou usar um sistema baseado em **timeout** para distinguir clique simples de duplo clique:
+
+1. No primeiro clique, inicia um timer de ~300ms
+2. Se houver segundo clique antes do timer expirar = duplo clique (curtir)
+3. Se o timer expirar sem segundo clique = clique simples (navegar)
+
+### Mudanças no `src/components/ModelCard.tsx`:
+
+**1. Adicionar ref para controlar o timer:**
 ```tsx
-className={`flex flex-col items-center gap-1 px-4 py-2 rounded-full transition-all duration-300 ${
-  isActive 
-    ? "gradient-bg text-white scale-110 shadow-lg shadow-primary/30" 
-    : "text-muted-foreground hover:text-foreground hover:scale-105"
-}`}
+import { useState, useRef } from "react";
+// ...
+const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
 
-**Para:**
+**2. Criar nova função de duplo clique para curtir:**
 ```tsx
-className={`flex flex-col items-center justify-center transition-all duration-300 ${
-  isActive 
-    ? "w-14 h-14 gradient-bg text-white rounded-full scale-110 shadow-lg shadow-primary/30" 
-    : "w-14 h-14 text-muted-foreground hover:text-foreground hover:scale-105"
-}`}
+const handleDoubleTapLike = () => {
+  if (!user) {
+    toast({
+      title: "Login necessário",
+      description: "Faça login para curtir este perfil",
+    });
+    navigate("/login");
+    return;
+  }
+  
+  // Só curte se ainda não tiver curtido
+  if (!liked) {
+    setLiked(true);
+    setLikes(prev => prev + 1);
+    // Opcional: feedback visual (animação de coração)
+  }
+};
 ```
 
-### O que muda:
-- Removo `gap-1 px-4 py-2` que criavam a forma oval
-- Adiciono `w-14 h-14` (56px x 56px) para garantir dimensões iguais
-- Adiciono `justify-center` para centralizar o conteúdo verticalmente
-- O `rounded-full` agora criará um círculo perfeito porque largura = altura
+**3. Substituir `onClick` por lógica de detecção:**
+```tsx
+const handleCardInteraction = () => {
+  if (clickTimeoutRef.current) {
+    // Segundo clique rápido = duplo clique
+    clearTimeout(clickTimeoutRef.current);
+    clickTimeoutRef.current = null;
+    handleDoubleTapLike();
+  } else {
+    // Primeiro clique - aguarda para ver se vem outro
+    clickTimeoutRef.current = setTimeout(() => {
+      clickTimeoutRef.current = null;
+      handleCardClick(); // Navega para o perfil
+    }, 300); // 300ms de intervalo
+  }
+};
+```
 
-### Resultado Visual:
-- Círculo perfeito de 56px de diâmetro quando ativo
-- Mesmas dimensões quando inativo para manter consistência
-- Animação de scale continua funcionando normalmente
+**4. Limpar timer no unmount:**
+```tsx
+import { useState, useRef, useEffect } from "react";
+
+useEffect(() => {
+  return () => {
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+  };
+}, []);
+```
+
+**5. Atualizar o elemento div principal:**
+```tsx
+<div 
+  className="relative w-full max-w-sm mx-auto animate-fade-in-up cursor-pointer" 
+  style={{ animationDelay: "0.2s" }}
+  onClick={handleCardInteraction}  // Mudança aqui
+>
+```
+
+## Resultado Esperado
+
+| Ação | Comportamento |
+|------|---------------|
+| 1 clique (espera 300ms) | Navega para `/model/:id` |
+| 2 cliques rápidos | Curte a foto (coração fica vermelho) |
+| Duplo clique sem login | Mostra toast e redireciona para login |
+| Duplo clique já curtido | Não faz nada (evita descurtir acidentalmente) |
+
+## Detalhes Adicionais
+
+- O delay de 300ms é padrão para detecção de duplo clique
+- Funciona bem tanto em desktop quanto em mobile (touch)
+- A lógica existente de verificação de login é reaproveitada
+- Os botões de ação (curtir, comentar, compartilhar) continuam funcionando normalmente com `stopPropagation`
+
