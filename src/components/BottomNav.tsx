@@ -88,27 +88,21 @@ const BottomNav = () => {
               onClick={() => handleNavClick(index, item.label)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-300 ${
                 isActive 
-                  ? "text-white scale-110" 
-                  : "text-muted-foreground hover:text-foreground hover:scale-105"
+                  ? "gradient-bg text-white" 
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {isAvatar ? (
-                <div className={`transition-all duration-300 ${isActive ? "scale-110" : ""}`}>
-                  <Avatar className={`${isActive ? "w-10 h-10 ring-2 ring-primary shadow-lg shadow-primary/50" : "w-8 h-8"} transition-all duration-300`}>
-                    <AvatarImage src={avatarUrl || ""} alt="Perfil" />
-                    <AvatarFallback className="bg-muted text-xs">
-                      {user?.email?.charAt(0).toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+                <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
+                  <AvatarImage src={avatarUrl || ""} alt="Perfil" />
+                  <AvatarFallback className="bg-muted text-xs">
+                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
               ) : (
                 <>
-                  <div className={`transition-all duration-300 ${isActive ? "scale-125 text-primary" : ""}`}>
-                    <item.icon className="w-5 h-5" />
-                  </div>
-                  <span className={`text-xs font-medium transition-all duration-300 ${isActive ? "text-primary font-semibold" : ""}`}>
-                    {item.label}
-                  </span>
+                  <item.icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{item.label}</span>
                 </>
               )}
             </button>
