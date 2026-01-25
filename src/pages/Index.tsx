@@ -13,16 +13,6 @@ const Index = () => {
       <Stories />
       
       <main className="flex-1 flex flex-col px-4 pb-24 pt-4">
-        {/* Hero Section */}
-        <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold gradient-text mb-2">
-            Secret Models
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Descubra modelos exclusivos com IA
-          </p>
-        </div>
-        
         {/* Search Prompt */}
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <SearchPrompt />
