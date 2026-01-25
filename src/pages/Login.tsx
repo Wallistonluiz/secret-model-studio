@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const loginSchema = z.object({
@@ -129,6 +129,16 @@ const Login = () => {
               Não tem conta?{' '}
               <Link to="/register" className="text-primary hover:underline font-medium">
                 Cadastre-se
+              </Link>
+            </div>
+
+            <div className="mt-4 text-center">
+              <Link 
+                to="/home" 
+                className="text-muted-foreground hover:text-foreground text-sm flex items-center justify-center gap-1"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Voltar para Home
               </Link>
             </div>
           </CardContent>
