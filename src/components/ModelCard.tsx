@@ -93,7 +93,7 @@ const ModelCard = ({
         />
         
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
         
         {/* Model info */}
         <div className="absolute bottom-0 left-0 right-0 p-6">
