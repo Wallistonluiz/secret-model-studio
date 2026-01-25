@@ -1,10 +1,36 @@
+import Header from "@/components/Header";
+import SearchPrompt from "@/components/SearchPrompt";
+import ModelCard from "@/components/ModelCard";
+import BottomNav from "@/components/BottomNav";
+
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Secret Models</h1>
-        <p className="text-xl text-muted-foreground">Comece a construir seu projeto aqui!</p>
-      </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      
+      <main className="flex-1 flex flex-col px-4 pb-24 pt-4">
+        {/* Hero Section */}
+        <div className="text-center mb-8 animate-fade-in">
+          <h1 className="text-4xl font-bold gradient-text mb-2">
+            Secret Models
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Descubra modelos exclusivos com IA
+          </p>
+        </div>
+        
+        {/* Search Prompt */}
+        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <SearchPrompt />
+        </div>
+        
+        {/* Featured Model Card */}
+        <div className="flex-1 flex items-center justify-center">
+          <ModelCard />
+        </div>
+      </main>
+      
+      <BottomNav />
     </div>
   );
 };
