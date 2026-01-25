@@ -41,16 +41,18 @@ const Index = () => {
       )}
       
       <main className="flex-1 px-4 pb-24 pt-4 overflow-y-auto">
-        {/* Desktop: Logo + Search lado a lado */}
+        {/* Desktop: Logo + Search centralizados e colados */}
         {!isMobile && (
-          <div className="flex items-center gap-6 mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <img 
-              src={logo} 
-              alt="Secret Models" 
-              className="w-32 h-32 object-contain flex-shrink-0" 
-            />
-            <div className="flex-1">
-              <SearchPrompt />
+          <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <div className="flex items-center gap-3">
+              <img 
+                src={logo} 
+                alt="Secret Models" 
+                className="w-24 h-24 object-contain flex-shrink-0" 
+              />
+              <div className="w-[500px]">
+                <SearchPrompt />
+              </div>
             </div>
           </div>
         )}
