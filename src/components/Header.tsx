@@ -1,12 +1,20 @@
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
+import logoMobile from "@/assets/logo-mobile.png";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <header className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center">
-        <img src={logo} alt="Secret Models" className="w-28 h-28 object-contain" />
+        <img 
+          src={isMobile ? logoMobile : logo} 
+          alt="Secret Models" 
+          className={isMobile ? "h-10 object-contain" : "w-28 h-28 object-contain"} 
+        />
       </div>
       
       <Button 
