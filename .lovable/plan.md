@@ -1,146 +1,203 @@
 
-# Plano: Sistema de Autenticação Completo
+# Plano: Novo Fluxo de Navegacao com Acesso Livre e Restricoes para Usuarios Logados
 
-## Resumo
-Implementar autenticação de usuários com páginas de Login e Cadastro, contexto de autenticação global, e proteção de rotas.
-
----
-
-## O que será criado
-
-### 1. Arquivos Novos
-
-| Arquivo | Descrição |
-|---------|-----------|
-| `src/pages/Login.tsx` | Página de login com email/senha |
-| `src/pages/Register.tsx` | Página de cadastro com username, email e senha |
-| `src/contexts/AuthContext.tsx` | Contexto global de autenticação |
-| `src/components/ProtectedRoute.tsx` | Componente para proteger rotas |
-
-### 2. Arquivos Modificados
-
-| Arquivo | Modificação |
-|---------|-------------|
-| `src/App.tsx` | Adicionar rotas de login/cadastro e provider de auth |
-| `src/components/BottomNav.tsx` | Adicionar botão de perfil/logout |
-| `src/pages/Splash.tsx` | Redirecionar para /home se já logado |
-
----
-
-## Fluxo de Autenticação
+## Resumo do Novo Fluxo
 
 ```text
-Usuário abre o app
-       |
-       v
-  [Splash Page]
-       |
-       +---> Logado? ---> [/home]
-       |
-       +---> Não logado ---> [Botão "Entrar"]
-                               |
-                               v
-                           [/login]
-                               |
-                 +-------------+-------------+
-                 |                           |
-                 v                           v
-        [Fazer Login]              [Ir para /register]
-                 |                           |
-                 v                           v
-           [/home]                  [Criar Conta]
+                                    +------------------+
+                                    |      Splash      |
+                                    | (Video + Termos) |
+                                    +--------+---------+
+                                             |
+                                    Clica "Entrar"
                                              |
                                              v
-                                       [/home]
+                        +--------------------+--------------------+
+                        |                  HOME                   |
+                        |          (Acesso Livre para Todos)      |
+                        +--------------------+--------------------+
+                                             |
+                    +------------------------+------------------------+
+                    |                        |                        |
+                    v                        v                        v
+           Ver Feed de Modelos       Clicar em "Perfil"        Interagir (Curtir,
+           (Livre)                   no BottomNav              Comentar, Ver Perfil)
+                                             |                        |
+                                             v                        v
+                                    +--------+--------+       +-------+-------+
+                                    |   Logado?       |       |   Logado?     |
+                                    +--------+--------+       +-------+-------+
+                                    Sim |         | Nao       Sim |       | Nao
+                                        v         v               v       v
+                                    Pagina     Tela de       Acao     Redireciona
+                                    Perfil     Login/        Permitida para Login
+                                    Usuario    Cadastro
+```
+
+## O Que Sera Bloqueado para Usuarios Nao Logados
+
+| Funcionalidade | Sem Login | Com Login |
+|----------------|-----------|-----------|
+| Ver Home/Feed de modelos | Permitido | Permitido |
+| Curtir modelo | Bloqueado | Permitido |
+| Comentar | Bloqueado | Permitido |
+| Acessar pagina de perfil da modelo (/model/:id) | Bloqueado | Permitido |
+| Botao "Perfil" no BottomNav | Redireciona para Login | Abre perfil do usuario |
+
+## Alteracoes Necessarias
+
+### 1. Splash.tsx
+- Remover o redirect automatico para `/home` quando usuario esta logado
+- O botao "Entrar" agora vai direto para `/home` (acesso livre)
+- O video com termos sera visto por TODOS antes de entrar
+
+### 2. Register.tsx  
+- Apos cadastro bem-sucedido, redirecionar para `/login` em vez de `/home`
+
+### 3. Login.tsx
+- Apos login bem-sucedido, redirecionar para `/home` (nao mais para Splash)
+
+### 4. ModelCard.tsx
+- Adicionar verificacao de autenticacao nos botoes de curtir e comentar
+- Se nao logado, redirecionar para `/login` ao tentar interagir
+- Exibir toast informando que precisa fazer login
+
+### 5. ModelProfile.tsx
+- Proteger a pagina inteira: se usuario nao estiver logado, redirecionar para `/login`
+- Adicionar useAuth() para verificar status de login
+
+### 6. BottomNav.tsx
+- O botao "Perfil" ja redireciona para `/login` se nao logado (ja implementado)
+- Manter comportamento atual
+
+---
+
+## Detalhes Tecnicos
+
+### Splash.tsx
+Remover o useEffect que faz redirect automatico (linhas 14-19) e alterar o botao "Entrar" para ir para `/home`:
+
+```typescript
+// REMOVER:
+useEffect(() => {
+  if (!loading && user) {
+    navigate("/home");
+  }
+}, [user, loading, navigate]);
+
+// ALTERAR handleEnter:
+const handleEnter = () => {
+  navigate("/home"); // Ir direto para home (acesso livre)
+};
+```
+
+### Register.tsx (linha 63)
+```typescript
+// De:
+navigate('/home');
+
+// Para:
+navigate('/login');
+```
+
+### Login.tsx (linha 48)
+```typescript
+// De:
+navigate('/home');
+
+// Para:
+navigate('/home'); // Manter assim (ja esta correto apos login)
+```
+
+### ModelCard.tsx
+Adicionar verificacao de auth e redirecionamento:
+
+```typescript
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+
+// Dentro do componente:
+const { user } = useAuth();
+const { toast } = useToast();
+
+const handleLike = (e: React.MouseEvent) => {
+  e.stopPropagation();
+  if (!user) {
+    toast({
+      title: "Login necessario",
+      description: "Faca login para curtir este perfil",
+    });
+    navigate("/login");
+    return;
+  }
+  // ... logica existente
+};
+
+const handleOpenComments = (e: React.MouseEvent) => {
+  e.stopPropagation();
+  if (!user) {
+    toast({
+      title: "Login necessario", 
+      description: "Faca login para ver os comentarios",
+    });
+    navigate("/login");
+    return;
+  }
+  setIsCommentsOpen(true);
+};
+
+const handleCardClick = () => {
+  if (!user) {
+    toast({
+      title: "Login necessario",
+      description: "Faca login para ver o perfil completo",
+    });
+    navigate("/login");
+    return;
+  }
+  navigate(`/model/${id}`);
+};
+```
+
+### ModelProfile.tsx
+Adicionar protecao de rota no inicio do componente:
+
+```typescript
+import { useAuth } from "@/contexts/AuthContext";
+
+// Dentro do componente:
+const { user, loading } = useAuth();
+
+// Redirect se nao logado
+useEffect(() => {
+  if (!loading && !user) {
+    navigate("/login");
+  }
+}, [user, loading, navigate]);
+
+// Mostrar loading enquanto verifica auth
+if (loading) {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+}
 ```
 
 ---
 
-## Detalhes das Páginas
+## Arquivos a Serem Modificados
 
-### Página de Login (`/login`)
-- Campo de email
-- Campo de senha
-- Botão "Entrar"
-- Link para cadastro ("Não tem conta? Cadastre-se")
-- Mensagens de erro amigáveis
-- Design consistente com o tema roxo/rosa do app
-
-### Página de Cadastro (`/register`)
-- Campo de username
-- Campo de nome de exibição
-- Campo de email
-- Campo de senha (mínimo 6 caracteres)
-- Botão "Criar Conta"
-- Link para login ("Já tem conta? Faça login")
-- Validação de formulário
-
----
-
-## Contexto de Autenticação
-
-O `AuthContext` irá:
-- Gerenciar o estado do usuário logado
-- Fornecer funções: `signIn`, `signUp`, `signOut`
-- Usar `onAuthStateChange` do Supabase para sincronização
-- Carregar sessão existente ao iniciar o app
-
----
-
-## Segurança
-
-- Senhas nunca são armazenadas localmente
-- Sessão gerenciada pelo Supabase
-- Tokens de autenticação seguros
-- Perfil criado automaticamente via trigger no banco
-
----
-
-## Detalhes Técnicos
-
-### Dependências utilizadas
-- `@supabase/supabase-js` (já incluído via integração Lovable)
-- `react-hook-form` + `zod` (validação de formulários)
-- Componentes UI existentes (Button, Input, Form, Card)
-
-### Estrutura do AuthContext
-```text
-AuthContext
-├── user: User | null
-├── session: Session | null
-├── loading: boolean
-├── signIn(email, password)
-├── signUp(email, password, metadata)
-└── signOut()
-```
-
-### Rotas do App
-```text
-/           -> Splash (tela inicial com vídeo)
-/login      -> Login
-/register   -> Cadastro
-/home       -> Feed de modelos
-/model/:id  -> Perfil da modelo
-```
-
----
-
-## Ordem de Implementação
-
-1. Criar cliente Supabase (`src/integrations/supabase/client.ts`)
-2. Criar `AuthContext` com toda a lógica de autenticação
-3. Criar página de Login com formulário validado
-4. Criar página de Cadastro com formulário validado
-5. Atualizar `App.tsx` com novas rotas e AuthProvider
-6. Atualizar `BottomNav` com indicador de usuário logado
-7. Testar fluxo completo
-
----
+1. `src/pages/Splash.tsx` - Remover redirect automatico, manter botao indo para /home
+2. `src/pages/Register.tsx` - Alterar redirect pos-cadastro para /login
+3. `src/components/ModelCard.tsx` - Adicionar verificacao de auth nas interacoes
+4. `src/pages/ModelProfile.tsx` - Proteger pagina inteira com verificacao de auth
 
 ## Resultado Final
 
-Após a implementação:
-- Usuários poderão criar conta e fazer login
-- Sessão persistida entre visitas
-- Perfil criado automaticamente no banco
-- Interface responsiva e consistente com o design atual
+- Qualquer pessoa pode ver o video de termos e acessar a home
+- O feed de modelos e visivel para todos
+- Curtir, comentar ou clicar no card da modelo exige login
+- A pagina de perfil da modelo so e acessivel para usuarios logados
+- O botao "Perfil" no menu inferior leva para login se nao logado
