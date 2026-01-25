@@ -371,7 +371,7 @@ const ModelProfile = () => {
 
       {/* Fullscreen Gallery Modal */}
       <Dialog open={selectedPhoto !== null} onOpenChange={() => setSelectedPhoto(null)}>
-        <DialogContent className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button.dialog-close]:hidden">
+        <DialogContent className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button]:hidden">
           {/* Close button */}
           <div className="absolute top-6 right-6 z-50">
             <button 
