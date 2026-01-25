@@ -54,6 +54,13 @@ const EditProfile = () => {
     const fetchProfile = async () => {
       if (!user) return;
       
+      // Pega metadata do usuário logado (sempre disponível)
+      const meta = (user.user_metadata || {}) as {
+        username?: string;
+        display_name?: string;
+        gender?: string;
+      };
+      
       const { data } = await supabase
         .from("profiles")
         .select("*")
@@ -61,14 +68,20 @@ const EditProfile = () => {
         .maybeSingle();
       
       if (data) {
-        setDisplayName(data.display_name || "");
-        setUsername(data.username || "");
+        // Usa dados do banco, com fallback para metadata
+        setDisplayName(data.display_name || meta.display_name || "");
+        setUsername(data.username || meta.username || user.email?.split("@")[0] || "");
         setBio(data.bio || "");
         setUserType((data.user_type as "user" | "model") || "user");
         setLocation(data.location || "");
         setAge(data.age?.toString() || "");
         setAvatarUrl(data.avatar_url || "");
-        setGender(data.gender || null);
+        setGender(data.gender || meta.gender || null);
+      } else {
+        // Se não existir registro no banco, usa metadata diretamente
+        setDisplayName(meta.display_name || "");
+        setUsername(meta.username || user.email?.split("@")[0] || "");
+        setGender(meta.gender || null);
       }
       setLoading(false);
     };
