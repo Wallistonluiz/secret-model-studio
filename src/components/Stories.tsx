@@ -4,6 +4,11 @@ import story2 from "@/assets/story-2.jpg";
 import story3 from "@/assets/story-3.jpg";
 import story4 from "@/assets/story-4.jpg";
 import story5 from "@/assets/story-5.jpg";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 interface Story {
   id: number;
@@ -20,12 +25,15 @@ const storiesData: Story[] = [
   { id: 3, name: "Luna", avatar: story3, hasNewStory: true },
   { id: 4, name: "Yuki", avatar: story4, hasNewStory: false },
   { id: 5, name: "Valentina", avatar: story5, hasNewStory: true },
+  { id: 6, name: "Maria", avatar: story1, hasNewStory: true },
+  { id: 7, name: "Ana", avatar: story2, hasNewStory: false },
+  { id: 8, name: "Julia", avatar: story3, hasNewStory: true },
 ];
 
 const StoryAvatar = ({ story }: { story: Story }) => {
   if (story.isYourStory) {
     return (
-      <div className="flex flex-col items-center gap-1 min-w-[70px]">
+      <div className="flex flex-col items-center gap-1">
         <div className="relative">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
             <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center">
@@ -44,7 +52,7 @@ const StoryAvatar = ({ story }: { story: Story }) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-1 min-w-[70px] cursor-pointer group">
+    <div className="flex flex-col items-center gap-1 cursor-pointer group">
       <div 
         className={`p-[2px] rounded-full ${
           story.hasNewStory 
@@ -69,12 +77,22 @@ const StoryAvatar = ({ story }: { story: Story }) => {
 
 const Stories = () => {
   return (
-    <div className="w-full overflow-x-auto scrollbar-hide animate-fade-in">
-      <div className="flex gap-3 px-4 py-2">
-        {storiesData.map((story) => (
-          <StoryAvatar key={story.id} story={story} />
-        ))}
-      </div>
+    <div className="w-full animate-fade-in px-4 py-2">
+      <Carousel
+        opts={{
+          align: "start",
+          dragFree: true,
+        }}
+        className="w-full"
+      >
+        <CarouselContent className="-ml-2">
+          {storiesData.map((story) => (
+            <CarouselItem key={story.id} className="basis-auto pl-2">
+              <StoryAvatar story={story} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 };
