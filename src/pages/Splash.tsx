@@ -36,7 +36,7 @@ const Splash = () => {
       />
 
       {/* Logo - posição independente */}
-      <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pt-[180px]">
+      <div className="absolute top-0 left-0 right-0 flex justify-center z-10 pt-[230px]">
         <img src={logo} alt="Secret Models" className="h-40 object-contain" />
       </div>
 
