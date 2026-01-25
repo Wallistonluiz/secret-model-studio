@@ -1,73 +1,33 @@
 
 
-# Plano: Substituir Badges por Botões de Ação
+# Plano: Adicionar Descrição da Modelo
 
 ## O que será feito
 
-Substituir a seção de "Specialties" (linhas 258-265) pelos três botões de ação conforme a imagem de referência.
+Inserir a bio/descrição da modelo logo abaixo do nome, idade e badge verificado.
 
-## Mudanças técnicas
+## Mudança técnica
 
 ### Arquivo: `src/pages/ModelProfile.tsx`
 
-**1. Adicionar campo `whatsapp` na interface `ModelData` e em cada modelo:**
-```typescript
-interface ModelData {
-  // ... campos existentes
-  whatsapp: string;
-}
+Inserir um parágrafo com a bio após a linha 246 (fechamento do div com nome/idade):
 
-// Em cada modelo:
-whatsapp: "5511999999999",
-```
-
-**2. Adicionar função `handleWhatsApp`:**
-```typescript
-const handleWhatsApp = () => {
-  window.open(`https://wa.me/${model.whatsapp}`, "_blank");
-};
-```
-
-**3. Substituir a seção de Specialties (linhas 258-265):**
-
-**De:**
 ```tsx
-{/* Specialties */}
-<div className="flex flex-wrap gap-2 mb-6">
-  {model.specialties.map((specialty, index) => (
-    <Badge key={index} variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-      {specialty}
-    </Badge>
-  ))}
+{/* Nome, idade, badge */}
+<div className="flex items-center gap-2 mb-2">
+  <h1 className="text-3xl font-bold text-foreground">{model.name}</h1>
+  <span className="text-2xl text-muted-foreground">{model.age}</span>
+  <img src={verifiedBadge} alt="Verificado" className="w-6 h-6" />
 </div>
-```
 
-**Para:**
-```tsx
-{/* Action Buttons */}
-<div className="flex items-center gap-2 mb-6">
-  <Button
-    variant={isFollowing ? "secondary" : "outline"}
-    onClick={() => setIsFollowing(!isFollowing)}
-    className="flex-1 h-9"
-  >
-    {isFollowing ? "Seguindo" : "Seguir"}
-  </Button>
-  
-  <Button className="flex-1 h-9 bg-primary hover:bg-primary/90 text-primary-foreground">
-    Enviar mensagem
-  </Button>
-  
-  <Button
-    variant="outline"
-    size="icon"
-    onClick={handleWhatsApp}
-    className="h-9 w-9 bg-[#25D366] hover:bg-[#25D366]/90 border-[#25D366]"
-  >
-    <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-  </Button>
+{/* Bio/Descrição - NOVO */}
+<p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+  {model.bio}
+</p>
+
+{/* Localização */}
+<div className="flex items-center gap-2 text-muted-foreground mb-4">
+  ...
 </div>
 ```
 
@@ -76,21 +36,27 @@ const handleWhatsApp = () => {
 ```text
 +------------------------------------------+
 |  Isabella 23 ✓                           |
+|                                          |
+|  Modelo profissional com 5 anos de       |  ← NOVO
+|  experiência em ensaios fotográficos...  |
+|                                          |
 |  📍 São Paulo, SP                        |
 |                                          |
-|  [Seguir] [Enviar mensagem] [📱]         |  ← NOVO (substitui os badges)
-|                                          |
-|  ┌────────┬────────┬────────┐            |
-|  │ 12.5k  │  147   │  4.9   │            |
-|  └────────┴────────┴────────┘            |
+|  [Seguir] [Enviar mensagem] [📱]         |
 +------------------------------------------+
 ```
 
+## Dados já existentes
+
+O campo `bio` já existe nos dados de cada modelo:
+- Isabella: "Modelo profissional com 5 anos de experiência..."
+- Sofia: "Especialista em moda e lifestyle..."
+- Valentina: "Makeup artist e modelo..."
+- Camila: "Artista visual e modelo..."
+- Luna: "Modelo comercial e influencer..."
+
 ## O que NÃO muda
 
-- Header com seta de voltar e botões existentes
-- Hero image
-- Nome, idade, badge verificado, localização
-- Estatísticas (grid de 3 colunas)
-- Tabs e todo o conteúdo abaixo
+- Todo o layout existente permanece igual
+- Apenas insere a bio entre nome e localização
 
