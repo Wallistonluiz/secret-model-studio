@@ -38,7 +38,7 @@ const Splash = () => {
       {/* Enter Button and Description */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
         {/* Logo above button */}
-        <img src={logo} alt="Secret Models" className="h-40 object-contain mb-8" />
+        <img src={logo} alt="Secret Models" className="h-40 object-contain mb-8 mt-[50px]" />
         
         <Button
           onClick={handleEnter}
