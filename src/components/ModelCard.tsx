@@ -1,4 +1,5 @@
 import modelImage from "@/assets/model-featured.jpg";
+import { Heart, MessageCircle, Send } from "lucide-react";
 
 interface ModelCardProps {
   name?: string;
@@ -31,6 +32,19 @@ const ModelCard = ({
         
         {/* Glow effect */}
         <div className="absolute inset-0 rounded-3xl animate-glow pointer-events-none" />
+      </div>
+      
+      {/* Action buttons */}
+      <div className="flex items-center gap-4 mt-3 px-2">
+        <button className="text-foreground hover:text-primary transition-colors">
+          <Heart size={24} />
+        </button>
+        <button className="text-foreground hover:text-primary transition-colors">
+          <MessageCircle size={24} />
+        </button>
+        <button className="text-foreground hover:text-primary transition-colors">
+          <Send size={24} />
+        </button>
       </div>
     </div>
   );
