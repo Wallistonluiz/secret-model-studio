@@ -14,7 +14,7 @@ const Header = () => {
           className={isMobile ? "h-10 object-contain" : "w-28 h-28 object-contain"} 
         />
         <p className="text-muted-foreground text-sm mt-1">
-          Descubra modelos exclusivos com IA
+          Descubra modelos exclusivos
         </p>
       </div>
     </header>
