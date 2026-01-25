@@ -1,67 +1,100 @@
 
 
 ## Resumo
-Adicionar botões de interação estilo Instagram embaixo de cada card de modelo: curtir (coração), comentar (balão) e compartilhar.
+Criar um modal de comentários estilo Instagram que abre ao clicar no ícone de comentário, exibindo uma lista de comentários existentes e um campo para adicionar novos comentários.
 
 ---
 
-## O que será alterado
+## O que sera alterado
 
-### ModelCard.tsx
-- Adicionar uma barra de ações abaixo da imagem do card
-- Incluir 3 ícones clicáveis usando Lucide React:
-  - **Heart** (coração) - Curtir
-  - **MessageCircle** (balão) - Comentar  
-  - **Share2** ou **Send** - Compartilhar
-- Estilizar os ícones com cor clara e efeito hover
-- Manter o espaçamento consistente entre os ícones
+### 1. ModelCard.tsx
+- Adicionar estado para controlar abertura/fechamento do modal de comentários
+- Adicionar estado para armazenar lista de comentários
+- Adicionar estado para o texto do novo comentário
+- Integrar o Dialog component da shadcn/ui ao botão de comentário
+- Criar funcionalidade para adicionar novos comentários
+
+### 2. Estrutura do Modal de Comentarios
+
+O modal tera:
+- **Header**: Titulo "Comentarios" com contador
+- **Lista de comentarios**: Scrollable com avatar, nome e texto
+- **Footer**: Campo de input + botao de enviar
 
 ---
 
 ## Layout Visual
 
 ```text
-┌─────────────────────────────┐
-│                             │
-│       [Foto Modelo]         │
-│                             │
-│    Isabella, 23 anos        │
-└─────────────────────────────┘
-   ♡        💬        ➤
- Curtir  Comentar  Compartilhar
+┌────────────────────────────────────┐
+│  Comentários (3)              [X]  │
+├────────────────────────────────────┤
+│  ┌──┐ @maria                       │
+│  │  │ Que linda! 😍                │
+│  └──┘                              │
+│                                    │
+│  ┌──┐ @joao                        │
+│  │  │ Perfeita demais!             │
+│  └──┘                              │
+│                                    │
+│  ┌──┐ @ana                         │
+│  │  │ Maravilhosa ❤️               │
+│  └──┘                              │
+│                                    │
+├────────────────────────────────────┤
+│  ┌──────────────────────┐  [Enviar]│
+│  │ Adicione um comentário│          │
+│  └──────────────────────┘          │
+└────────────────────────────────────┘
 ```
 
 ---
 
-## Detalhes Técnicos
+## Dados Iniciais de Comentarios
 
-| Elemento | Ícone Lucide | Descrição |
-|----------|--------------|-----------|
-| Curtir | `Heart` | Ícone de coração |
-| Comentar | `MessageCircle` | Balão de comentário |
-| Compartilhar | `Send` | Ícone de enviar/compartilhar |
+Cada modelo tera comentarios iniciais aleatorios para parecer mais realista:
 
-### Estrutura do código
+| Usuario | Comentario |
+|---------|------------|
+| @maria | "Que linda! 😍" |
+| @joao | "Perfeita demais!" |
+| @ana | "Maravilhosa ❤️" |
+| @carlos | "Incrivel!" |
+| @julia | "Arrasou! 🔥" |
 
+---
+
+## Detalhes Tecnicos
+
+### Interface de Comentario
 ```tsx
-<div className="flex items-center gap-4 mt-3 px-2">
-  <button className="hover:text-primary transition-colors">
-    <Heart size={24} />
-  </button>
-  <button className="hover:text-primary transition-colors">
-    <MessageCircle size={24} />
-  </button>
-  <button className="hover:text-primary transition-colors">
-    <Send size={24} />
-  </button>
-</div>
+interface Comment {
+  id: string;
+  username: string;
+  text: string;
+  timestamp: Date;
+}
 ```
+
+### Estados a adicionar
+```tsx
+const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+const [comments, setComments] = useState<Comment[]>(initialComments);
+const [newComment, setNewComment] = useState("");
+```
+
+### Componentes utilizados
+- `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle` (shadcn/ui)
+- `Input` (shadcn/ui)
+- `Button` (shadcn/ui)
+- `ScrollArea` (shadcn/ui) para lista scrollavel
+- `Avatar` (shadcn/ui) para foto do usuario
 
 ---
 
 ## Arquivos a modificar
 
-| Arquivo | Alteração |
+| Arquivo | Alteracao |
 |---------|-----------|
-| `src/components/ModelCard.tsx` | Adicionar barra de ações com ícones de curtir, comentar e compartilhar |
+| `src/components/ModelCard.tsx` | Adicionar modal de comentarios com lista, input e funcionalidade de envio |
 
