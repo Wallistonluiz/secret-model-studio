@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import modelImage from "@/assets/model-featured.jpg";
-
 import verifiedBadge from "@/assets/verificado.webp";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import {
@@ -14,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Comment {
   id: string;
@@ -46,6 +47,8 @@ const ModelCard = ({
   description = "Disponível para ensaios exclusivos ✨"
 }: ModelCardProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -53,17 +56,41 @@ const ModelCard = ({
   const [newComment, setNewComment] = useState("");
 
   const handleCardClick = () => {
+    if (!user) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para ver o perfil completo",
+      });
+      navigate("/login");
+      return;
+    }
     navigate(`/model/${id}`);
   };
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!user) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para curtir este perfil",
+      });
+      navigate("/login");
+      return;
+    }
     setLiked(!liked);
     setLikes(prev => liked ? prev - 1 : prev + 1);
   };
 
   const handleOpenComments = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!user) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para ver os comentários",
+      });
+      navigate("/login");
+      return;
+    }
     setIsCommentsOpen(true);
   };
 

@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 import introVideo from "@/assets/intro-video.webm";
 import logo from "@/assets/logo.png";
 
@@ -9,14 +8,6 @@ const Splash = () => {
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    // Redirect to home if already logged in
-    if (!loading && user) {
-      navigate("/home");
-    }
-  }, [user, loading, navigate]);
 
   const handleTimeUpdate = () => {
     const video = videoRef.current;
@@ -27,13 +18,8 @@ const Splash = () => {
   };
 
   const handleEnter = () => {
-    navigate("/login");
+    navigate("/home");
   };
-
-  // Show nothing while checking auth
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="fixed inset-0 bg-black flex flex-col">
