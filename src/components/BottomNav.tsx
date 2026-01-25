@@ -98,8 +98,8 @@ const BottomNav = () => {
               onClick={() => handleNavClick(item.label)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-300 ${
                 isActive 
-                  ? "gradient-bg text-white" 
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "gradient-bg text-white scale-110 shadow-lg shadow-primary/30" 
+                  : "text-muted-foreground hover:text-foreground hover:scale-105"
               }`}
             >
               {isAvatar ? (
