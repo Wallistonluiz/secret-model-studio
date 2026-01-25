@@ -5,9 +5,8 @@ import logo from "@/assets/logo.png";
 const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-3">
-      <div className="flex items-center gap-3">
-        <img src={logo} alt="Secret Models" className="w-12 h-12 object-contain" />
-        <span className="text-xl font-semibold text-foreground">Secret Models</span>
+      <div className="flex items-center">
+        <img src={logo} alt="Secret Models" className="w-20 h-20 object-contain" />
       </div>
       
       <Button 
