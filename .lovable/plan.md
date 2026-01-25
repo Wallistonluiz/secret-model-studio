@@ -1,49 +1,50 @@
 
 # Guia Completo: Integrar Supabase ao Seu Projeto
 
-## Visao Geral
-Vamos conectar seu projeto Secret Models a um banco de dados Supabase externo. Isso permitira armazenar dados reais de modelos, usuarios, comentarios e curtidas.
+## Visão Geral
+Conectar o Secret Models a um banco de dados Supabase externo com autenticação de usuários.
 
 ---
 
-## Passo 1: Criar Projeto no Supabase (se ainda nao tiver)
+## Passo 1: Criar Projeto no Supabase
 
-1. Acesse **https://supabase.com** e faca login
+1. Acesse **https://supabase.com** e faça login
 2. Clique em **"New Project"**
-3. Preencha:
-   - **Name**: `secret-models` (ou nome de sua preferencia)
-   - **Database Password**: Anote esta senha em local seguro
-   - **Region**: Escolha a mais proxima (South America se disponivel)
-4. Clique em **"Create new project"** e aguarde 2-3 minutos
+3. Preencha os dados e aguarde 2-3 minutos
 
 ---
 
-## Passo 2: Obter Credenciais do Supabase
+## Passo 2: Obter Credenciais
 
-1. No dashboard do Supabase, va em **Project Settings** (icone de engrenagem)
-2. Clique em **API** no menu lateral
-3. Copie estas informacoes:
-   - **Project URL**: `https://xxxxx.supabase.co`
-   - **anon public key**: Uma chave longa que comeca com `eyJ...`
+No Supabase Dashboard → **Project Settings** → **API**:
+- **Project URL**: `https://xxxxx.supabase.co`
+- **anon public key**: `eyJ...`
 
 ---
 
-## Passo 3: Conectar Supabase ao Lovable
+## Passo 3: Conectar ao Lovable
 
-1. No Lovable, clique no botao **"Supabase"** no canto superior direito
+1. No Lovable, clique no botão **"Supabase"** (canto superior direito)
 2. Selecione **"Connect to Supabase"**
-3. Cole as credenciais:
-   - **Project URL**
-   - **Anon Key**
-4. Clique em **"Connect"**
+3. Cole as credenciais e clique **"Connect"**
 
 ---
 
-## Passo 4: Criar Tabelas no Banco de Dados
+## Passo 4: Criar Tabelas (Execute no SQL Editor do Supabase)
 
-Apos conectar, criaremos as tabelas necessarias para sua aplicacao:
+### 4.1 Tabela `profiles` (Perfis de Usuários)
+```sql
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text unique,
+  display_name text,
+  avatar_url text,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+```
 
-### Tabela `models` (Modelos/Perfis)
+### 4.2 Tabela `models` (Modelos/Perfis das Modelos)
 ```sql
 create table public.models (
   id uuid primary key default gen_random_uuid(),
@@ -52,116 +53,128 @@ create table public.models (
   description text,
   image_url text,
   is_verified boolean default false,
+  location text,
+  specialties text[],
+  languages text[],
+  availability text,
   created_at timestamp with time zone default now()
 );
 ```
 
-### Tabela `likes` (Curtidas)
+### 4.3 Tabela `likes` (Curtidas)
 ```sql
 create table public.likes (
   id uuid primary key default gen_random_uuid(),
-  model_id uuid references public.models(id) on delete cascade,
-  user_id uuid references auth.users(id) on delete cascade,
+  model_id uuid references public.models(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete cascade not null,
   created_at timestamp with time zone default now(),
   unique(model_id, user_id)
 );
 ```
 
-### Tabela `comments` (Comentarios)
+### 4.4 Tabela `comments` (Comentários)
 ```sql
 create table public.comments (
   id uuid primary key default gen_random_uuid(),
-  model_id uuid references public.models(id) on delete cascade,
-  user_id uuid references auth.users(id) on delete cascade,
+  model_id uuid references public.models(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete cascade not null,
   text text not null,
   created_at timestamp with time zone default now()
 );
 ```
 
----
-
-## Passo 5: Configurar Seguranca (RLS)
-
-Habilitaremos Row Level Security para proteger os dados:
-
+### 4.5 Trigger para criar perfil automaticamente
 ```sql
--- Habilitar RLS em todas as tabelas
-alter table public.models enable row level security;
-alter table public.likes enable row level security;
-alter table public.comments enable row level security;
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, username, display_name)
+  values (
+    new.id,
+    new.raw_user_meta_data ->> 'username',
+    new.raw_user_meta_data ->> 'display_name'
+  );
+  return new;
+end;
+$$;
 
--- Politicas para models (leitura publica)
-create policy "Models are viewable by everyone"
-  on public.models for select
-  using (true);
-
--- Politicas para likes
-create policy "Likes are viewable by everyone"
-  on public.likes for select
-  using (true);
-
-create policy "Users can insert their own likes"
-  on public.likes for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can delete their own likes"
-  on public.likes for delete
-  using (auth.uid() = user_id);
-
--- Politicas para comments
-create policy "Comments are viewable by everyone"
-  on public.comments for select
-  using (true);
-
-create policy "Users can insert their own comments"
-  on public.comments for insert
-  with check (auth.uid() = user_id);
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 ```
 
 ---
 
-## Passo 6: Atualizar Codigo do Projeto
+## Passo 5: Configurar RLS (Row Level Security)
 
-Apos conectar o Supabase, o Lovable criara automaticamente:
-- Arquivo `src/integrations/supabase/client.ts` (cliente Supabase)
-- Arquivo `src/integrations/supabase/types.ts` (tipos TypeScript)
+```sql
+-- Habilitar RLS
+alter table public.profiles enable row level security;
+alter table public.models enable row level security;
+alter table public.likes enable row level security;
+alter table public.comments enable row level security;
 
-Depois atualizaremos:
-1. **ModelCard.tsx** - Buscar e salvar curtidas/comentarios do banco
-2. **Index.tsx** - Carregar modelos do banco de dados
-3. **ModelProfile.tsx** - Exibir dados reais do modelo
+-- Profiles: usuário só edita o próprio perfil
+create policy "Public profiles are viewable by everyone"
+  on public.profiles for select using (true);
+
+create policy "Users can update own profile"
+  on public.profiles for update using (auth.uid() = id);
+
+-- Models: leitura pública
+create policy "Models are viewable by everyone"
+  on public.models for select using (true);
+
+-- Likes
+create policy "Likes are viewable by everyone"
+  on public.likes for select using (true);
+
+create policy "Users can insert their own likes"
+  on public.likes for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete their own likes"
+  on public.likes for delete using (auth.uid() = user_id);
+
+-- Comments
+create policy "Comments are viewable by everyone"
+  on public.comments for select using (true);
+
+create policy "Users can insert their own comments"
+  on public.comments for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete their own comments"
+  on public.comments for delete using (auth.uid() = user_id);
+```
 
 ---
 
-## Passo 7: Configurar EasyPanel (Deploy)
+## Passo 6: Próximos Passos
 
-Para o deploy funcionar, adicione as variaveis de ambiente no EasyPanel:
+Após conectar o Supabase ao Lovable:
 
-1. Va em **Environment** (Ambiente) no seu servico
-2. Adicione:
-   - `VITE_SUPABASE_URL` = sua URL do projeto
-   - `VITE_SUPABASE_ANON_KEY` = sua chave anon
-
----
-
-## Resumo dos Proximos Passos
-
-| Etapa | Acao | Onde |
-|-------|------|------|
-| 1 | Criar projeto Supabase | supabase.com |
-| 2 | Copiar URL e Anon Key | Supabase Dashboard |
-| 3 | Conectar ao Lovable | Botao Supabase no Lovable |
-| 4 | Criar tabelas | SQL Editor do Supabase |
-| 5 | Configurar RLS | SQL Editor do Supabase |
-| 6 | Atualizar codigo | Lovable (eu farei isso) |
-| 7 | Configurar deploy | EasyPanel |
+1. ✅ O Lovable criará automaticamente `src/integrations/supabase/`
+2. Eu implementarei:
+   - Páginas de Login e Cadastro
+   - Contexto de autenticação
+   - Integração das curtidas/comentários com o banco
+   - Carregamento de modelos do banco de dados
 
 ---
 
-## Voce precisa de autenticacao de usuarios?
+## Resumo
 
-Antes de prosseguir, preciso saber:
-- **Usuarios poderao criar conta e fazer login?**
-- **Voce precisa armazenar perfis de usuarios** (nome, avatar, preferencias)?
+| Etapa | Ação | Status |
+|-------|------|--------|
+| 1 | Criar projeto Supabase | ⏳ Você |
+| 2 | Copiar credenciais | ⏳ Você |
+| 3 | Conectar ao Lovable | ⏳ Você |
+| 4 | Criar tabelas (SQL acima) | ⏳ Você |
+| 5 | Configurar RLS (SQL acima) | ⏳ Você |
+| 6 | Implementar código | 🔜 Eu faço |
 
-Isso definira se precisamos criar tabelas e fluxos adicionais de autenticacao.
+---
+
+**👉 Próximo passo:** Crie o projeto no Supabase, execute os SQLs acima e conecte ao Lovable. Me avise quando estiver pronto!
