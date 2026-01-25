@@ -23,7 +23,6 @@ const registerSchema = z.object({
     .min(2, { message: 'Nome deve ter no mínimo 2 caracteres' })
     .max(50, { message: 'Nome deve ter no máximo 50 caracteres' }),
   gender: z.enum(['male', 'female'], { required_error: 'Selecione seu gênero' }),
-  email: z.string().trim().email({ message: 'Email inválido' }),
   password: z.string().min(6, { message: 'Senha deve ter no mínimo 6 caracteres' }),
 });
 
@@ -42,7 +41,6 @@ const Register = () => {
       username: '',
       displayName: '',
       gender: undefined,
-      email: '',
       password: '',
     },
   });
@@ -51,7 +49,9 @@ const Register = () => {
     setIsLoading(true);
     setError(null);
 
-    const { error } = await signUp(data.email, data.password, {
+    const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
+
+    const { error } = await signUp(generatedEmail, data.password, {
       username: data.username,
       display_name: data.displayName,
       gender: data.gender,
@@ -59,13 +59,12 @@ const Register = () => {
 
     if (error) {
       if (error.message.includes('already registered')) {
-        setError('Este email já está cadastrado');
+        setError('Este username já está cadastrado');
       } else {
         setError(error.message);
       }
       setIsLoading(false);
     } else {
-      // Após cadastro, redireciona para login
       navigate('/login');
     }
   };
@@ -177,25 +176,6 @@ const Register = () => {
                             <Label htmlFor="male" className="cursor-pointer">Masculino</Label>
                           </div>
                         </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="seu@email.com"
-                          className="bg-input/50"
-                          {...field}
-                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

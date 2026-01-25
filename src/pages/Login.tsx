@@ -13,7 +13,8 @@ import { Loader2, ArrowLeft } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const loginSchema = z.object({
-  email: z.string().trim().email({ message: 'Email inválido' }),
+  username: z.string().trim()
+    .min(3, { message: 'Username deve ter no mínimo 3 caracteres' }),
   password: z.string().min(6, { message: 'Senha deve ter no mínimo 6 caracteres' }),
 });
 
@@ -28,7 +29,7 @@ const Login = () => {
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -37,11 +38,12 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
-    const { error } = await signIn(data.email, data.password);
+    const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
+    const { error } = await signIn(generatedEmail, data.password);
 
     if (error) {
       setError(error.message === 'Invalid login credentials' 
-        ? 'Email ou senha incorretos' 
+        ? 'Username ou senha incorretos' 
         : error.message);
       setIsLoading(false);
     } else {
@@ -72,14 +74,14 @@ const Login = () => {
 
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Username</FormLabel>
                       <FormControl>
                         <Input
-                          type="email"
-                          placeholder="seu@email.com"
+                          type="text"
+                          placeholder="seu_username"
                           className="bg-input/50"
                           {...field}
                         />
