@@ -48,7 +48,7 @@ const Index = () => {
               <img 
                 src={logo} 
                 alt="Secret Models" 
-                className="w-24 h-24 object-contain flex-shrink-0" 
+                className="w-32 h-32 object-contain flex-shrink-0" 
               />
               <div className="w-[500px]">
                 <SearchPrompt />
