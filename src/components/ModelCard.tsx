@@ -52,9 +52,23 @@ const ModelCard = ({
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
 
-  const handleLike = () => {
+  const handleCardClick = () => {
+    navigate(`/model/${id}`);
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setLiked(!liked);
     setLikes(prev => liked ? prev - 1 : prev + 1);
+  };
+
+  const handleOpenComments = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCommentsOpen(true);
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   const handleAddComment = () => {
@@ -77,19 +91,22 @@ const ModelCard = ({
   };
 
   return (
-    <div className="relative w-full max-w-sm mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+    <div 
+      className="relative w-full max-w-sm mx-auto animate-fade-in-up cursor-pointer" 
+      style={{ animationDelay: "0.2s" }}
+      onClick={handleCardClick}
+    >
       <div className="relative rounded-3xl overflow-hidden aspect-[3/4] glass gradient-border">
         {/* Verified badge */}
         <img 
           src={verifiedIcon} 
           alt="Usuário verificado" 
-          className="absolute top-3 right-3 w-8 h-8 z-10"
+          className="absolute top-3 right-3 w-8 h-8 z-10 pointer-events-none"
         />
         <img
           src={image}
           alt={name}
-          className="w-full h-full object-cover cursor-pointer"
-          onClick={() => navigate(`/model/${id}`)}
+          className="w-full h-full object-cover"
         />
         
         {/* Gradient overlay */}
@@ -131,13 +148,16 @@ const ModelCard = ({
           </span>
         </button>
         <button 
-          onClick={() => setIsCommentsOpen(true)}
+          onClick={handleOpenComments}
           className="flex items-center gap-1 text-foreground hover:text-primary transition-colors"
         >
           <MessageCircle size={24} />
           <span className="text-sm text-muted-foreground">{comments.length}</span>
         </button>
-        <button className="text-foreground hover:text-primary transition-colors">
+        <button 
+          onClick={handleShare}
+          className="text-foreground hover:text-primary transition-colors"
+        >
           <Send size={24} />
         </button>
       </div>
