@@ -35,9 +35,9 @@ const Splash = () => {
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Logo, Botão e descrição - todos juntos, descidos 300px */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-[300px]">
-        <img src={logo} alt="Secret Models" className="h-40 object-contain mb-2 mt-[30px]" />
+      {/* Logo, Botão e descrição - posicionados com translate */}
+      <div className="absolute inset-x-0 top-1/2 flex flex-col items-center z-10 translate-y-[150px]">
+        <img src={logo} alt="Secret Models" className="h-40 object-contain mb-1 translate-y-[30px]" />
         <Button
           onClick={handleEnter}
           className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg font-semibold rounded-full shadow-lg shadow-purple-500/30 transition-all duration-300 hover:scale-105"
