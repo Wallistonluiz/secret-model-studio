@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import modelImage from "@/assets/model-featured.jpg";
 import verifiedBadge from "@/assets/verificado.webp";
@@ -54,6 +54,16 @@ const ModelCard = ({
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleCardClick = () => {
     if (!user) {
@@ -65,6 +75,38 @@ const ModelCard = ({
       return;
     }
     navigate(`/model/${id}`);
+  };
+
+  const handleDoubleTapLike = () => {
+    if (!user) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para curtir este perfil",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    // Só curte se ainda não tiver curtido
+    if (!liked) {
+      setLiked(true);
+      setLikes(prev => prev + 1);
+    }
+  };
+
+  const handleCardInteraction = () => {
+    if (clickTimeoutRef.current) {
+      // Segundo clique rápido = duplo clique (curtir)
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+      handleDoubleTapLike();
+    } else {
+      // Primeiro clique - aguarda para ver se vem outro
+      clickTimeoutRef.current = setTimeout(() => {
+        clickTimeoutRef.current = null;
+        handleCardClick(); // Navega para o perfil
+      }, 300);
+    }
   };
 
   const handleLike = (e: React.MouseEvent) => {
@@ -121,7 +163,7 @@ const ModelCard = ({
     <div 
       className="relative w-full max-w-sm mx-auto animate-fade-in-up cursor-pointer" 
       style={{ animationDelay: "0.2s" }}
-      onClick={handleCardClick}
+      onClick={handleCardInteraction}
     >
       <div className="relative rounded-3xl overflow-hidden aspect-[3/4] glass gradient-border">
         <img
