@@ -1,70 +1,38 @@
 
-# Plano: Página de Perfil da Modelo
+# Plano: Remover Ícone do Topo do Card
 
 ## Objetivo
-Criar uma página de perfil para cada modelo, acessível ao clicar na imagem do card. A página mostrará informações detalhadas da modelo com um visual premium, seguindo o estilo atual do app.
+Remover o ícone de usuário verificado que aparece no canto superior direito do card da modelo.
 
-## O que será criado
+## O que será alterado
 
-### Nova Página de Perfil
-A página de perfil terá:
-- **Foto grande** da modelo no topo (estilo hero)
-- **Nome e idade** com badge de verificado
-- **Descrição/bio** mais detalhada
-- **Estatísticas** (seguidores, fotos, avaliação)
-- **Galeria de fotos** em grid
-- **Botão de contato/mensagem**
-- **Botão de voltar** para a home
-- Layout responsivo (mobile e desktop)
+### Arquivo: `src/components/ModelCard.tsx`
 
-### Comportamento
-- Ao clicar na **imagem do card**, o usuário será redirecionado para `/model/:id`
-- Os botões de curtir/comentar continuam funcionando normalmente (não redirecionam)
+1. **Remover o import** do `verifiedIcon` (linha 4)
+2. **Remover o elemento `<img>`** que exibe o ícone no topo direito (linhas 100-105)
+
+O badge de verificado ao lado do nome (na parte inferior) será mantido, pois só estamos removendo o ícone do topo.
 
 ---
 
 ## Detalhes Tecnicos
 
-### Arquivos a serem modificados/criados
+### Codigo a ser removido
 
-1. **`src/pages/ModelProfile.tsx`** (novo)
-   - Página completa do perfil
-   - Recebe o ID do modelo via URL params
-   - Exibe foto hero, informações, estatísticas e galeria
-   - Botão de voltar usando `useNavigate`
-
-2. **`src/App.tsx`**
-   - Adicionar rota `/model/:id` para a página de perfil
-
-3. **`src/components/ModelCard.tsx`**
-   - Adicionar `id` nas props
-   - Tornar a imagem clicavel com `useNavigate`
-   - Usar `cursor-pointer` na imagem
-
-4. **`src/pages/Index.tsx`**
-   - Passar o `id` do modelo para o `ModelCard`
-
-### Estrutura da Pagina de Perfil
-
-```text
-+----------------------------------+
-|  <- Voltar          [Mensagem]   |
-+----------------------------------+
-|                                  |
-|        [Foto Hero Grande]        |
-|                                  |
-+----------------------------------+
-|   Nome, 23      [Verificado]     |
-|   "Descrição da modelo..."       |
-+----------------------------------+
-|  Seguidores  |  Fotos  |  Nota   |
-|     1.2k     |   45    |  4.9    |
-+----------------------------------+
-|   [Galeria de Fotos em Grid]     |
-|   [img] [img] [img]              |
-|   [img] [img] [img]              |
-+----------------------------------+
+**Import (linha 4):**
+```tsx
+import verifiedIcon from "@/assets/usuario-verificado.png";
 ```
 
-### Dados Mockados
-Por enquanto, usaremos dados fictícios para a galeria e estatísticas, já que não há backend. A galeria usará as imagens já existentes no projeto (story-1.jpg, story-2.jpg, etc).
+**Elemento (linhas 100-105):**
+```tsx
+{/* Verified badge */}
+<img 
+  src={verifiedIcon} 
+  alt="Usuário verificado" 
+  className="absolute top-3 right-3 w-8 h-8 z-10 pointer-events-none"
+/>
+```
+
+### Resultado
+O card ficará mais limpo, com apenas o badge de verificado ao lado do nome na parte inferior.
