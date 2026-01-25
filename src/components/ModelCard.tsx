@@ -1,6 +1,7 @@
 import { useState } from "react";
 import modelImage from "@/assets/model-featured.jpg";
 import verifiedIcon from "@/assets/usuario-verificado.png";
+import verifiedBadge from "@/assets/verificado-badge.png";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import {
   Dialog,
@@ -89,7 +90,14 @@ const ModelCard = ({
         
         {/* Model info */}
         <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h3 className="text-2xl font-bold text-foreground mb-1">{name}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-foreground">{name}</h3>
+            <img 
+              src={verifiedBadge} 
+              alt="Verificado" 
+              className="w-5 h-5"
+            />
+          </div>
           <p className="text-muted-foreground">{age} anos</p>
         </div>
         
