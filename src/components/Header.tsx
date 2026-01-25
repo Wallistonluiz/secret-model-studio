@@ -11,11 +11,13 @@ const Header = () => {
         <img 
           src={isMobile ? logoMobile : logo} 
           alt="Secret Models" 
-          className={isMobile ? "h-10 object-contain" : "w-28 h-28 object-contain"} 
+          className={isMobile ? "h-10 object-contain" : "w-48 h-48 object-contain"} 
         />
-        <p className="text-muted-foreground text-sm mt-1">
-          Descubra modelos exclusivos
-        </p>
+        {isMobile && (
+          <p className="text-muted-foreground text-sm mt-1">
+            Descubra modelos exclusivos
+          </p>
+        )}
       </div>
     </header>
   );
