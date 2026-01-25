@@ -1,100 +1,97 @@
 
 
 ## Resumo
-Criar um modal de comentários estilo Instagram que abre ao clicar no ícone de comentário, exibindo uma lista de comentários existentes e um campo para adicionar novos comentários.
+Criar uma página de splash/intro com o vídeo que você enviou rodando em tela cheia como fundo. Uma barra de progresso mostrará o andamento do vídeo, e quando terminar, o usuário será automaticamente redirecionado para a página principal com os modelos.
 
 ---
 
-## O que sera alterado
+## O que será criado
 
-### 1. ModelCard.tsx
-- Adicionar estado para controlar abertura/fechamento do modal de comentários
-- Adicionar estado para armazenar lista de comentários
-- Adicionar estado para o texto do novo comentário
-- Integrar o Dialog component da shadcn/ui ao botão de comentário
-- Criar funcionalidade para adicionar novos comentários
+### 1. Copiar o vídeo para o projeto
+O vídeo `.webm` que você enviou será copiado para a pasta `src/assets/` do projeto.
 
-### 2. Estrutura do Modal de Comentarios
+### 2. Nova página Splash.tsx
+Uma nova página será criada com:
+- Vídeo em tela cheia como fundo (autoplay, sem som)
+- Barra de progresso na parte inferior mostrando o andamento
+- Redirecionamento automático para a página principal quando o vídeo terminar
 
-O modal tera:
-- **Header**: Titulo "Comentarios" com contador
-- **Lista de comentarios**: Scrollable com avatar, nome e texto
-- **Footer**: Campo de input + botao de enviar
+### 3. Atualizar rotas no App.tsx
+- A rota `/` passará a ser a página Splash
+- A página dos modelos será movida para `/home`
 
 ---
 
 ## Layout Visual
 
 ```text
-┌────────────────────────────────────┐
-│  Comentários (3)              [X]  │
-├────────────────────────────────────┤
-│  ┌──┐ @maria                       │
-│  │  │ Que linda! 😍                │
-│  └──┘                              │
-│                                    │
-│  ┌──┐ @joao                        │
-│  │  │ Perfeita demais!             │
-│  └──┘                              │
-│                                    │
-│  ┌──┐ @ana                         │
-│  │  │ Maravilhosa ❤️               │
-│  └──┘                              │
-│                                    │
-├────────────────────────────────────┤
-│  ┌──────────────────────┐  [Enviar]│
-│  │ Adicione um comentário│          │
-│  └──────────────────────┘          │
-└────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│                                     │
+│         [VÍDEO FULLSCREEN]          │
+│          (fundo escuro)             │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+├─────────────────────────────────────┤
+│  ████████████░░░░░░░░  75%          │
+│       [Barra de Progresso]          │
+└─────────────────────────────────────┘
+         ↓ (ao terminar)
+    Redireciona para /home
 ```
 
 ---
 
-## Dados Iniciais de Comentarios
+## Detalhes Técnicos
 
-Cada modelo tera comentarios iniciais aleatorios para parecer mais realista:
+### Estrutura da página Splash
 
-| Usuario | Comentario |
-|---------|------------|
-| @maria | "Que linda! 😍" |
-| @joao | "Perfeita demais!" |
-| @ana | "Maravilhosa ❤️" |
-| @carlos | "Incrivel!" |
-| @julia | "Arrasou! 🔥" |
-
----
-
-## Detalhes Tecnicos
-
-### Interface de Comentario
 ```tsx
-interface Comment {
-  id: string;
-  username: string;
-  text: string;
-  timestamp: Date;
-}
+// Estados
+const [progress, setProgress] = useState(0);
+const videoRef = useRef<HTMLVideoElement>(null);
+const navigate = useNavigate();
+
+// Atualizar progresso do vídeo
+const handleTimeUpdate = () => {
+  const video = videoRef.current;
+  if (video) {
+    const percentage = (video.currentTime / video.duration) * 100;
+    setProgress(percentage);
+  }
+};
+
+// Redirecionar quando terminar
+const handleVideoEnd = () => {
+  navigate("/home");
+};
 ```
 
-### Estados a adicionar
-```tsx
-const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-const [comments, setComments] = useState<Comment[]>(initialComments);
-const [newComment, setNewComment] = useState("");
-```
-
-### Componentes utilizados
-- `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle` (shadcn/ui)
-- `Input` (shadcn/ui)
-- `Button` (shadcn/ui)
-- `ScrollArea` (shadcn/ui) para lista scrollavel
-- `Avatar` (shadcn/ui) para foto do usuario
+### Estilização do vídeo
+- `object-cover` para preencher toda a tela
+- `fixed inset-0` para posição fullscreen
+- `autoPlay` e `muted` para iniciar automaticamente
+- `playsInline` para compatibilidade mobile
 
 ---
 
-## Arquivos a modificar
+## Arquivos a criar/modificar
 
-| Arquivo | Alteracao |
-|---------|-----------|
-| `src/components/ModelCard.tsx` | Adicionar modal de comentarios com lista, input e funcionalidade de envio |
+| Arquivo | Ação |
+|---------|------|
+| `src/assets/intro-video.webm` | Copiar o vídeo enviado |
+| `src/pages/Splash.tsx` | **Criar** - página de intro com vídeo e progresso |
+| `src/App.tsx` | Atualizar rotas: `/` = Splash, `/home` = Index |
+
+---
+
+## Fluxo do usuário
+
+1. Usuário acessa o app
+2. Vê o vídeo de intro em tela cheia
+3. Barra de progresso mostra o andamento
+4. Quando o vídeo termina → vai automaticamente para a página dos modelos
 
