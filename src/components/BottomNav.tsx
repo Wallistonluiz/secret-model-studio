@@ -38,7 +38,7 @@ const BottomNav = () => {
     
     switch (label) {
       case "Início":
-        navigate("/");
+        navigate("/home");
         break;
       case "Explorar":
         navigate("/explorar");
