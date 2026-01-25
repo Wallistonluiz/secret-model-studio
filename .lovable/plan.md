@@ -1,115 +1,68 @@
 
-# Plano: Autenticacao por Username + Senha
+# Plano: Mostrar Aviso de Sucesso Antes de Redirecionar
 
-## Visao Geral
+## Situacao Atual
 
-Remover o campo de email visivel e usar username + senha para autenticacao. Internamente, o sistema vai gerar um email automatico baseado no username para satisfazer os requisitos do Supabase Auth.
+O codigo ja possui uma tela de sucesso pronta (linhas 72-98), porem ela nunca e exibida porque apos o cadastro o sistema redireciona diretamente para `/login` na linha 68.
 
-## Como Vai Funcionar
+## Alteracao Necessaria
 
-```text
-CADASTRO:
-Usuario digita: username, nome, genero, senha
-Sistema gera: username@secretmodels.app (invisivel)
-Supabase recebe: email gerado + senha
+Modificar o `onSubmit` para:
+1. Setar `setSuccess(true)` em vez de redirecionar imediatamente
+2. A tela de sucesso ja existente sera exibida automaticamente
+3. Usuario clica no botao "Ir para Login" quando estiver pronto
 
-LOGIN:
-Usuario digita: username + senha
-Sistema converte: username -> username@secretmodels.app
-Supabase valida: email gerado + senha
-```
+### Arquivo: src/pages/Register.tsx
 
-## Arquivos a Modificar
-
-### 1. src/pages/Register.tsx
-
-**Remover:**
-- Campo de email do formulario
-- Validacao de email no schema
-
-**Modificar:**
-- Schema com apenas: username, displayName, gender, password (todos obrigatorios)
-- No onSubmit: gerar email automatico `${username}@secretmodels.app`
+**Modificar linha 68:**
 
 ```typescript
-// Schema atualizado
-const registerSchema = z.object({
-  username: z.string().trim()
-    .min(3, { message: 'Username deve ter no minimo 3 caracteres' })
-    .max(20, { message: 'Username deve ter no maximo 20 caracteres' })
-    .regex(/^[a-zA-Z0-9_]+$/, { message: 'Username so pode conter letras, numeros e underscore' }),
-  displayName: z.string().trim()
-    .min(2, { message: 'Nome deve ter no minimo 2 caracteres' })
-    .max(50, { message: 'Nome deve ter no maximo 50 caracteres' }),
-  gender: z.enum(['male', 'female'], { required_error: 'Selecione seu genero' }),
-  password: z.string().min(6, { message: 'Senha deve ter no minimo 6 caracteres' }),
-});
+// DE:
+} else {
+  navigate('/login');
+}
 
-// No onSubmit
-const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
-await signUp(generatedEmail, data.password, { ... });
+// PARA:
+} else {
+  setSuccess(true);
+}
 ```
 
-### 2. src/pages/Login.tsx
+## Tela de Sucesso (ja implementada)
 
-**Modificar:**
-- Trocar campo "Email" por "Username"
-- Schema validar username ao inves de email
-- No onSubmit: converter username para email gerado
+A tela exibe:
+- Logo do app
+- Titulo "Cadastro realizado!"
+- Mensagem de confirmacao
+- Botao "Ir para Login"
+
+## Ajuste na Mensagem
+
+Como nao usamos mais email de confirmacao (autenticacao por username), vamos atualizar a mensagem da tela de sucesso:
+
+**Modificar linhas 82-85:**
 
 ```typescript
-// Schema atualizado
-const loginSchema = z.object({
-  username: z.string().trim()
-    .min(3, { message: 'Username deve ter no minimo 3 caracteres' }),
-  password: z.string().min(6, { message: 'Senha deve ter no minimo 6 caracteres' }),
-});
+// DE:
+<CardTitle className="text-2xl gradient-text">Cadastro realizado!</CardTitle>
+<CardDescription>
+  Enviamos um email de confirmação para você. Por favor, verifique sua caixa de entrada.
+</CardDescription>
 
-// No onSubmit
-const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
-await signIn(generatedEmail, data.password);
-
-// Mensagem de erro atualizada
-setError('Username ou senha incorretos');
+// PARA:
+<CardTitle className="text-2xl gradient-text">Cadastro realizado!</CardTitle>
+<CardDescription>
+  Sua conta foi criada com sucesso. Agora voce pode fazer login.
+</CardDescription>
 ```
 
-## Campos do Formulario de Cadastro (ordem)
+## Resumo
 
-| Campo | Label | Tipo | Obrigatorio |
-|-------|-------|------|-------------|
-| username | Username | text | Sim |
-| displayName | Nome de Exibicao | text | Sim |
-| gender | Genero | radio (Feminino/Masculino) | Sim |
-| password | Senha | password | Sim |
+| Alteracao | Linha | Descricao |
+|-----------|-------|-----------|
+| onSubmit | 68 | Trocar `navigate('/login')` por `setSuccess(true)` |
+| CardDescription | 83-85 | Atualizar mensagem removendo referencia a email |
 
-## Campos do Formulario de Login
+## Resultado
 
-| Campo | Label | Tipo |
-|-------|-------|------|
-| username | Username | text |
-| password | Senha | password |
-
-## Detalhes Tecnicos
-
-### Geracao de Email Automatico
-- Formato: `{username}@secretmodels.app`
-- Username convertido para minusculas para consistencia
-- Email gerado nao e visivel para o usuario em nenhum momento
-
-### Tratamento de Erros
-- "already registered" -> "Este username ja esta cadastrado"
-- "Invalid login credentials" -> "Username ou senha incorretos"
-
-## Resumo das Alteracoes
-
-| Arquivo | Alteracao |
-|---------|-----------|
-| src/pages/Register.tsx | Remover campo email, gerar email automatico do username |
-| src/pages/Login.tsx | Trocar campo email por username, converter para email no login |
-
-## Resultado Final
-
-- Usuario ve apenas: Username, Nome, Genero, Senha no cadastro
-- Usuario ve apenas: Username, Senha no login
-- Email e gerado automaticamente e fica invisivel
-- Sistema funciona normalmente com Supabase Auth
+Apos cadastro bem-sucedido, usuario vera uma tela bonita confirmando que a conta foi criada, com um botao para ir ao login quando estiver pronto.
