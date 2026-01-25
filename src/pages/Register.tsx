@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
@@ -20,6 +22,7 @@ const registerSchema = z.object({
   displayName: z.string().trim()
     .min(2, { message: 'Nome deve ter no mínimo 2 caracteres' })
     .max(50, { message: 'Nome deve ter no máximo 50 caracteres' }),
+  gender: z.enum(['male', 'female'], { required_error: 'Selecione seu gênero' }),
   email: z.string().trim().email({ message: 'Email inválido' }),
   password: z.string().min(6, { message: 'Senha deve ter no mínimo 6 caracteres' }),
 });
@@ -38,6 +41,7 @@ const Register = () => {
     defaultValues: {
       username: '',
       displayName: '',
+      gender: undefined,
       email: '',
       password: '',
     },
@@ -50,6 +54,7 @@ const Register = () => {
     const { error } = await signUp(data.email, data.password, {
       username: data.username,
       display_name: data.displayName,
+      gender: data.gender,
     });
 
     if (error) {
@@ -145,6 +150,33 @@ const Register = () => {
                           className="bg-input/50"
                           {...field}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gênero</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="flex gap-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="female" id="female" />
+                            <Label htmlFor="female" className="cursor-pointer">Feminino</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="male" id="male" />
+                            <Label htmlFor="male" className="cursor-pointer">Masculino</Label>
+                          </div>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

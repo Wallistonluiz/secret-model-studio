@@ -21,6 +21,7 @@ interface Profile {
   user_type?: string | null;
   location?: string | null;
   age?: number | null;
+  gender?: string | null;
 }
 
 const EditProfile = () => {
@@ -39,6 +40,7 @@ const EditProfile = () => {
   const [location, setLocation] = useState("");
   const [age, setAge] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [gender, setGender] = useState<string | null>(null);
 
   // Proteção de rota
   useEffect(() => {
@@ -66,6 +68,7 @@ const EditProfile = () => {
         setLocation(data.location || "");
         setAge(data.age?.toString() || "");
         setAvatarUrl(data.avatar_url || "");
+        setGender(data.gender || null);
       }
       setLoading(false);
     };
@@ -223,58 +226,62 @@ const EditProfile = () => {
           </div>
         </div>
 
-        <Separator className="bg-white/10" />
+        {/* Tipo de Conta - Só mostra se for feminino */}
+        {gender === "female" && (
+          <>
+            <Separator className="bg-white/10" />
 
-        {/* Tipo de Conta */}
-        <div className="space-y-4">
-          <Label className="text-base font-semibold">Tipo de conta</Label>
-          
-          <RadioGroup 
-            value={userType} 
-            onValueChange={(value) => setUserType(value as "user" | "model")}
-            className="space-y-3"
-          >
-            <label 
-              htmlFor="user-type"
-              className={`flex items-start gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
-                userType === "user" 
-                  ? "border-primary bg-primary/10" 
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
-              }`}
-            >
-              <RadioGroupItem value="user" id="user-type" className="mt-1" />
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <User className="w-4 h-4" />
-                  <span className="font-medium">Usuário comum</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Navegue, siga modelos e interaja com conteúdos
-                </p>
-              </div>
-            </label>
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">Tipo de conta</Label>
+              
+              <RadioGroup 
+                value={userType} 
+                onValueChange={(value) => setUserType(value as "user" | "model")}
+                className="space-y-3"
+              >
+                <label 
+                  htmlFor="user-type"
+                  className={`flex items-start gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
+                    userType === "user" 
+                      ? "border-primary bg-primary/10" 
+                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <RadioGroupItem value="user" id="user-type" className="mt-1" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <User className="w-4 h-4" />
+                      <span className="font-medium">Usuário comum</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Navegue, siga modelos e interaja com conteúdos
+                    </p>
+                  </div>
+                </label>
 
-            <label 
-              htmlFor="model-type"
-              className={`flex items-start gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
-                userType === "model" 
-                  ? "border-primary bg-primary/10" 
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
-              }`}
-            >
-              <RadioGroupItem value="model" id="model-type" className="mt-1" />
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <Star className="w-4 h-4" />
-                  <span className="font-medium">Modelo</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Crie seu perfil de modelo e seja descoberta
-                </p>
-              </div>
-            </label>
-          </RadioGroup>
-        </div>
+                <label 
+                  htmlFor="model-type"
+                  className={`flex items-start gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
+                    userType === "model" 
+                      ? "border-primary bg-primary/10" 
+                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <RadioGroupItem value="model" id="model-type" className="mt-1" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Star className="w-4 h-4" />
+                      <span className="font-medium">Modelo</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Crie seu perfil de modelo e seja descoberta
+                    </p>
+                  </div>
+                </label>
+              </RadioGroup>
+            </div>
+          </>
+        )}
 
         {/* Campos extras para Modelo */}
         {userType === "model" && (
