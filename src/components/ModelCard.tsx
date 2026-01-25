@@ -95,7 +95,7 @@ const ModelCard = ({
             <img 
               src={verifiedBadge} 
               alt="Verificado" 
-              className="w-8 h-8"
+              className="w-7 h-7"
             />
           </div>
           <p className="text-muted-foreground">{age} anos</p>
