@@ -1,60 +1,60 @@
 
 
 ## Resumo
-Adicionar múltiplos cards de modelos na página inicial com rolagem vertical, cada um com imagem, nome e idade diferentes.
+Adicionar botões de interação estilo Instagram embaixo de cada card de modelo: curtir (coração), comentar (balão) e compartilhar.
 
 ---
 
 ## O que será alterado
 
-### 1. Criar dados de modelos
-Criar um array de dados com informações de cada modelo (nome, idade, imagem). Por enquanto, podemos reutilizar a imagem existente ou as imagens dos Stories, e você pode posteriormente fazer upload de novas imagens para cada modelo.
-
-### 2. Index.tsx
-- Substituir o card único por uma lista de cards em um container com rolagem
-- Mapear o array de modelos para renderizar múltiplos `ModelCard`
-- Ajustar o layout para exibir os cards em coluna com espaçamento
-
----
-
-## Dados iniciais dos modelos
-
-| Nome | Idade | Imagem |
-|------|-------|--------|
-| Isabella | 23 | model-featured.jpg |
-| Sofia | 21 | story-1.jpg |
-| Valentina | 25 | story-2.jpg |
-| Camila | 22 | story-3.jpg |
-| Luna | 24 | story-4.jpg |
+### ModelCard.tsx
+- Adicionar uma barra de ações abaixo da imagem do card
+- Incluir 3 ícones clicáveis usando Lucide React:
+  - **Heart** (coração) - Curtir
+  - **MessageCircle** (balão) - Comentar  
+  - **Share2** ou **Send** - Compartilhar
+- Estilizar os ícones com cor clara e efeito hover
+- Manter o espaçamento consistente entre os ícones
 
 ---
 
-## Resultado Visual
+## Layout Visual
 
 ```text
 ┌─────────────────────────────┐
-│      [Logo Secret Models]   │
-│  Descubra modelos exclusivos│
-├─────────────────────────────┤
-│     [Stories avatares]      │
-├─────────────────────────────┤
-│  ┌─────────────────────┐    │
-│  │ Buscar...       [→] │    │
-│  └─────────────────────┘    │
 │                             │
-│  ┌─────────────────────┐    │
-│  │    Isabella, 23     │    │
-│  └─────────────────────┘    │
+│       [Foto Modelo]         │
 │                             │
-│  ┌─────────────────────┐    │
-│  │    Sofia, 21        │    │  ← Rolagem
-│  └─────────────────────┘    │     vertical
-│                             │
-│  ┌─────────────────────┐    │
-│  │    Valentina, 25    │    │
-│  └─────────────────────┘    │
-│          ...                │
+│    Isabella, 23 anos        │
 └─────────────────────────────┘
+   ♡        💬        ➤
+ Curtir  Comentar  Compartilhar
+```
+
+---
+
+## Detalhes Técnicos
+
+| Elemento | Ícone Lucide | Descrição |
+|----------|--------------|-----------|
+| Curtir | `Heart` | Ícone de coração |
+| Comentar | `MessageCircle` | Balão de comentário |
+| Compartilhar | `Send` | Ícone de enviar/compartilhar |
+
+### Estrutura do código
+
+```tsx
+<div className="flex items-center gap-4 mt-3 px-2">
+  <button className="hover:text-primary transition-colors">
+    <Heart size={24} />
+  </button>
+  <button className="hover:text-primary transition-colors">
+    <MessageCircle size={24} />
+  </button>
+  <button className="hover:text-primary transition-colors">
+    <Send size={24} />
+  </button>
+</div>
 ```
 
 ---
@@ -63,11 +63,5 @@ Criar um array de dados com informações de cada modelo (nome, idade, imagem). 
 
 | Arquivo | Alteração |
 |---------|-----------|
-| `src/pages/Index.tsx` | Criar array de modelos e renderizar múltiplos cards com espaçamento vertical |
-
----
-
-## Observação
-
-Você pode fazer upload de novas imagens para cada modelo a qualquer momento. Basta anexar as fotos aqui no chat e eu atualizo os cards com as imagens corretas!
+| `src/components/ModelCard.tsx` | Adicionar barra de ações com ícones de curtir, comentar e compartilhar |
 
