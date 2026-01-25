@@ -375,9 +375,9 @@ const ModelProfile = () => {
           {/* Close button */}
           <button 
             onClick={() => setSelectedPhoto(null)} 
-            className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-colors border border-white/30"
           >
-            <X className="w-6 h-6" />
+            <X className="w-7 h-7" />
           </button>
 
           {/* Draggable Carousel */}
