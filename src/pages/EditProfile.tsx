@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Loader2, Camera, User, Star } from "lucide-react";
+import { ArrowLeft, Loader2, User, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import AvatarUpload from "@/components/AvatarUpload";
 
 interface Profile {
   id: string;
@@ -165,25 +165,16 @@ const EditProfile = () => {
       </header>
 
       <div className="px-4 py-6 space-y-6">
-        {/* Avatar */}
-        <div className="flex flex-col items-center">
-          <div className="relative mb-3">
-            <div className="w-24 h-24 rounded-full gradient-border p-[3px]">
-              <Avatar className="w-full h-full">
-                <AvatarImage src={avatarUrl} alt={displayName} />
-                <AvatarFallback className="bg-muted text-3xl">
-                  {(displayName || username || "U").charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full gradient-bg flex items-center justify-center">
-              <Camera className="w-4 h-4 text-white" />
-            </button>
-          </div>
-          <button className="text-primary text-sm font-medium">
-            Alterar foto
-          </button>
-        </div>
+        {/* Avatar Upload */}
+        {user && (
+          <AvatarUpload
+            userId={user.id}
+            currentAvatarUrl={avatarUrl}
+            displayName={displayName}
+            username={username}
+            onAvatarChange={setAvatarUrl}
+          />
+        )}
 
         <Separator className="bg-white/10" />
 
