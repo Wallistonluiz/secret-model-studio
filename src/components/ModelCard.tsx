@@ -96,7 +96,7 @@ const ModelCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
         
         {/* Model info */}
-        <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="absolute bottom-0 left-0 right-0 p-6 pointer-events-none">
           <div className="flex items-center gap-2">
             <h3 className="text-2xl font-bold text-foreground">{name}</h3>
             <img 
