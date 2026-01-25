@@ -13,7 +13,7 @@ const BottomNav = () => {
     
     if (label === "Perfil") {
       if (user) {
-        // TODO: Navigate to profile page when implemented
+        navigate("/profile");
       } else {
         navigate("/login");
       }
