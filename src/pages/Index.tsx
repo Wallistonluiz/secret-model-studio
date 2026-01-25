@@ -32,13 +32,8 @@ const Index = () => {
           <Stories />
         </>
       ) : (
-        // Desktop: Logo + Stories lado a lado (Stories centralizado na página)
-        <div className="relative px-6 py-4">
-          <img 
-            src={logo} 
-            alt="Secret Models" 
-            className="absolute left-6 top-4 w-48 h-48 object-contain" 
-          />
+        // Desktop: Stories centralizados no topo (sem logo)
+        <div className="px-6 py-4">
           <div className="flex justify-center">
             <Stories />
           </div>
@@ -46,10 +41,26 @@ const Index = () => {
       )}
       
       <main className="flex-1 px-4 pb-24 pt-4 overflow-y-auto">
-        {/* Search Prompt */}
-        <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <SearchPrompt />
-        </div>
+        {/* Desktop: Logo + Search lado a lado */}
+        {!isMobile && (
+          <div className="flex items-center gap-6 mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <img 
+              src={logo} 
+              alt="Secret Models" 
+              className="w-32 h-32 object-contain flex-shrink-0" 
+            />
+            <div className="flex-1">
+              <SearchPrompt />
+            </div>
+          </div>
+        )}
+        
+        {/* Mobile: Search sozinho */}
+        {isMobile && (
+          <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <SearchPrompt />
+          </div>
+        )}
         
         {/* Model Cards */}
         <div className="flex flex-col gap-6">
