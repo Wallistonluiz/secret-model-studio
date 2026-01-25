@@ -6,7 +6,7 @@ const Header = () => {
   const isMobile = useIsMobile();
   
   return (
-    <header className={`flex px-4 py-3 ${isMobile ? "justify-center" : "justify-start"}`}>
+    <header className={`flex px-4 py-3 mt-5 ${isMobile ? "justify-center" : "justify-start"}`}>
       <div className={`flex flex-col ${isMobile ? "items-center" : "items-start"}`}>
         <img 
           src={isMobile ? logoMobile : logo} 
