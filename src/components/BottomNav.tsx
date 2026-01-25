@@ -36,15 +36,27 @@ const BottomNav = () => {
   const handleNavClick = async (index: number, label: string) => {
     setActive(index);
     
-    if (label === "Perfil") {
-      if (user) {
-        navigate("/profile");
-      } else {
-        navigate("/login");
-      }
-    } else if (label === "Sair") {
-      await signOut();
-      navigate("/");
+    switch (label) {
+      case "Início":
+        navigate("/");
+        break;
+      case "Explorar":
+        navigate("/explorar");
+        break;
+      case "Favoritos":
+        navigate("/favoritos");
+        break;
+      case "Perfil":
+        if (user) {
+          navigate("/profile");
+        } else {
+          navigate("/login");
+        }
+        break;
+      case "Sair":
+        await signOut();
+        navigate("/");
+        break;
     }
   };
 
