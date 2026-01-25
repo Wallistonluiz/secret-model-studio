@@ -1,13 +1,12 @@
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center">
-          <span className="text-white font-bold text-sm">S</span>
-        </div>
+        <img src={logo} alt="Secret Models" className="w-8 h-8 object-contain" />
         <span className="text-lg font-semibold text-foreground">Secret Models</span>
       </div>
       
