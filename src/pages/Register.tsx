@@ -65,7 +65,7 @@ const Register = () => {
       }
       setIsLoading(false);
     } else {
-      navigate('/login');
+      setSuccess(true);
     }
   };
 
@@ -81,7 +81,7 @@ const Register = () => {
             <CardHeader className="text-center">
               <CardTitle className="text-2xl gradient-text">Cadastro realizado!</CardTitle>
               <CardDescription>
-                Enviamos um email de confirmação para você. Por favor, verifique sua caixa de entrada.
+                Sua conta foi criada com sucesso. Agora você pode fazer login.
               </CardDescription>
             </CardHeader>
             <CardContent>
