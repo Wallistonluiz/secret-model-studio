@@ -216,8 +216,7 @@ const ModelProfile = () => {
 
   return (
     <div className="min-h-screen bg-background animate-fade-in">
-      {/* Header */}
-      <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
+      <div className="sticky top-0 z-50 flex items-center p-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <Button
           variant="ghost"
           size="icon"
@@ -226,20 +225,6 @@ const ModelProfile = () => {
         >
           <ArrowLeft size={24} />
         </Button>
-        <div className="flex gap-2">
-          <Button
-            variant={isFollowing ? "secondary" : "outline"}
-            onClick={() => setIsFollowing(!isFollowing)}
-            className="gap-2"
-          >
-            <Heart size={18} className={isFollowing ? "fill-primary text-primary" : ""} />
-            {isFollowing ? "Seguindo" : "Seguir"}
-          </Button>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <MessageCircle size={18} className="mr-2" />
-            Mensagem
-          </Button>
-        </div>
       </div>
 
       {/* Hero Image */}
