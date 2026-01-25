@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import introVideo from "@/assets/intro-video.webm";
-import logoMobile from "@/assets/logo-mobile.png";
+import logo from "@/assets/logo.png";
 
 const Splash = () => {
   const [progress, setProgress] = useState(0);
@@ -37,7 +37,7 @@ const Splash = () => {
 
       {/* Logo at Top */}
       <div className="absolute top-8 left-0 right-0 flex justify-center z-10">
-        <img src={logoMobile} alt="Secret Models" className="h-12 object-contain" />
+        <img src={logo} alt="Secret Models" className="h-28 object-contain" />
       </div>
 
       {/* Enter Button and Description */}
