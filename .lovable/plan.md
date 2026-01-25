@@ -1,18 +1,17 @@
 
 
-## Layout Desktop Reorganizado: Logo + Stories no Topo
+## Logo ao Lado da Barra de Pesquisa (Desktop)
 
 ### Objetivo
-Reorganizar o layout no desktop para que a logo e os Stories fiquem na mesma linha no topo, com a barra de Search logo abaixo, seguida pelos cards das modelos.
+Reorganizar o layout do desktop para que a logomarca fique posicionada ao lado da barra de pesquisa, abaixo dos Stories.
 
-### Layout Final
+### Novo Layout Desktop
 
-**Desktop:**
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│  [LOGO 192px]        [Stories avatares em linha...]            │
+│           [Stories avatares centralizados...]                   │
 ├─────────────────────────────────────────────────────────────────┤
-│              [Barra de Search centralizada]                     │
+│   [LOGO]        [Barra de Search centralizada]                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                    [Card Modelo 1]                              │
 │                    [Card Modelo 2]                              │
@@ -20,79 +19,61 @@ Reorganizar o layout no desktop para que a logo e os Stories fiquem na mesma lin
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Mobile (sem alterações):**
-- Logo centralizada
-- Stories em carrossel abaixo
-- Search abaixo
-- Cards abaixo
-
 ### Mudanças Técnicas
 
-**1. Arquivo: `src/pages/Index.tsx`**
-- Importar o hook `useIsMobile`
-- Criar layout condicional:
-  - **Desktop:** Container flex com Logo + Stories lado a lado, depois Search, depois Cards
-  - **Mobile:** Manter estrutura atual vertical
+**Arquivo: `src/pages/Index.tsx`**
 
-**2. Arquivo: `src/components/Header.tsx`**
-- Exportar apenas a logo para ser usada separadamente no Index (desktop)
-- Ou criar um componente `Logo` reutilizável
+1. **Remover a logo do header desktop** - A logo não ficará mais no topo com posicionamento absoluto
 
-**3. Arquivo: `src/components/Stories.tsx`**
-- No desktop, ajustar para que os avatares fiquem alinhados à direita/centro da logo
+2. **Criar container flex para Logo + Search** - Novo container horizontal que agrupa a logo e o SearchPrompt lado a lado
 
-### Estrutura do Código (Index.tsx)
+3. **Mover a logo para dentro do main** - A logo ficará ao lado esquerdo da barra de pesquisa
+
+### Estrutura do Código Proposta
 
 ```tsx
-import { useIsMobile } from "@/hooks/use-mobile";
-import logo from "@/assets/logo.png";
-
-const Index = () => {
-  const isMobile = useIsMobile();
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {isMobile ? (
-        // Mobile: Layout vertical original
-        <>
-          <Header />
-          <Stories />
-        </>
-      ) : (
-        // Desktop: Logo + Stories lado a lado
-        <div className="flex items-center px-6 py-4 gap-8">
-          <img 
-            src={logo} 
-            alt="Secret Models" 
-            className="w-48 h-48 object-contain flex-shrink-0" 
-          />
-          <div className="flex-1">
-            <Stories />
-          </div>
-        </div>
-      )}
-      
-      <main className="flex-1 px-4 pb-24 pt-4 overflow-y-auto">
-        {/* Search Prompt - sempre abaixo */}
-        <div className="mb-8 animate-fade-in">
-          <SearchPrompt />
-        </div>
-        
-        {/* Model Cards */}
-        <div className="flex flex-col gap-6">
-          {models.map((model) => (
-            <ModelCard key={model.id} {...model} />
-          ))}
-        </div>
-      </main>
-      
-      <BottomNav />
+{isMobile ? (
+  <>
+    <Header />
+    <Stories />
+  </>
+) : (
+  // Desktop: Stories centralizados no topo (sem logo)
+  <div className="px-6 py-4">
+    <div className="flex justify-center">
+      <Stories />
     </div>
-  );
-};
+  </div>
+)}
+
+<main className="flex-1 px-4 pb-24 pt-4 overflow-y-auto">
+  {/* Desktop: Logo + Search lado a lado */}
+  {!isMobile && (
+    <div className="flex items-center gap-6 mb-8 animate-fade-in">
+      <img 
+        src={logo} 
+        alt="Secret Models" 
+        className="w-32 h-32 object-contain flex-shrink-0" 
+      />
+      <div className="flex-1">
+        <SearchPrompt />
+      </div>
+    </div>
+  )}
+  
+  {/* Mobile: Search sozinho */}
+  {isMobile && (
+    <div className="mb-8 animate-fade-in">
+      <SearchPrompt />
+    </div>
+  )}
+  
+  {/* Model Cards */}
+  ...
+</main>
 ```
 
 ### Resultado Esperado
-- **Desktop:** Logo grande à esquerda com Stories ao lado na mesma linha, Search centralizada abaixo, seguida pelos cards
+- **Desktop:** Stories centralizados no topo, logo à esquerda da barra de pesquisa abaixo
 - **Mobile:** Layout vertical mantido sem alterações
 
