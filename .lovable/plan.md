@@ -1,62 +1,59 @@
 
+# Plano: Ícone Padrão para Usuário Deslogado
 
-# Plano: Adicionar Descrição da Modelo
+## Problema Atual
+Quando o usuário não está logado, o BottomNav mostra a letra "U" dentro do avatar como fallback, o que não é intuitivo.
 
-## O que será feito
+## Solução
+Mostrar o ícone `User` do Lucide (ícone de perfil padrão) quando o usuário estiver deslogado, mantendo o avatar com foto/inicial apenas para usuários logados.
 
-Inserir a bio/descrição da modelo logo abaixo do nome, idade e badge verificado.
+## Mudança Técnica
 
-## Mudança técnica
+### Arquivo: `src/components/BottomNav.tsx`
 
-### Arquivo: `src/pages/ModelProfile.tsx`
-
-Inserir um parágrafo com a bio após a linha 246 (fechamento do div com nome/idade):
+1. Importar o ícone `User` do Lucide
+2. Modificar a renderização do item de perfil para verificar se há usuário logado
 
 ```tsx
-{/* Nome, idade, badge */}
-<div className="flex items-center gap-2 mb-2">
-  <h1 className="text-3xl font-bold text-foreground">{model.name}</h1>
-  <span className="text-2xl text-muted-foreground">{model.age}</span>
-  <img src={verifiedBadge} alt="Verificado" className="w-6 h-6" />
-</div>
+// Antes (linha 105-111):
+{isAvatar ? (
+  <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
+    <AvatarImage src={avatarUrl || ""} alt="Perfil" />
+    <AvatarFallback className="bg-muted text-xs">
+      {user?.email?.charAt(0).toUpperCase() || "U"}
+    </AvatarFallback>
+  </Avatar>
+)
 
-{/* Bio/Descrição - NOVO */}
-<p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-  {model.bio}
-</p>
-
-{/* Localização */}
-<div className="flex items-center gap-2 text-muted-foreground mb-4">
-  ...
-</div>
+// Depois:
+{isAvatar ? (
+  user ? (
+    <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
+      <AvatarImage src={avatarUrl || ""} alt="Perfil" />
+      <AvatarFallback className="bg-muted text-xs">
+        {user.email?.charAt(0).toUpperCase() || "U"}
+      </AvatarFallback>
+    </Avatar>
+  ) : (
+    <>
+      <User className="w-5 h-5" />
+      <span className="text-xs font-medium">Perfil</span>
+    </>
+  )
+)
 ```
 
-## Resultado visual
+## Resultado Visual
 
 ```text
-+------------------------------------------+
-|  Isabella 23 ✓                           |
-|                                          |
-|  Modelo profissional com 5 anos de       |  ← NOVO
-|  experiência em ensaios fotográficos...  |
-|                                          |
-|  📍 São Paulo, SP                        |
-|                                          |
-|  [Seguir] [Enviar mensagem] [📱]         |
-+------------------------------------------+
+Deslogado:                    Logado:
++-------+                     +-------+
+|  👤   |  ← Ícone User       |  📷   |  ← Avatar/Foto
+| Perfil|                     |       |  (sem texto)
++-------+                     +-------+
 ```
 
-## Dados já existentes
-
-O campo `bio` já existe nos dados de cada modelo:
-- Isabella: "Modelo profissional com 5 anos de experiência..."
-- Sofia: "Especialista em moda e lifestyle..."
-- Valentina: "Makeup artist e modelo..."
-- Camila: "Artista visual e modelo..."
-- Luna: "Modelo comercial e influencer..."
-
 ## O que NÃO muda
-
-- Todo o layout existente permanece igual
-- Apenas insere a bio entre nome e localização
-
+- Comportamento do clique (redireciona para login se deslogado)
+- Estilo do item ativo com gradiente
+- Avatar do usuário logado continua igual
