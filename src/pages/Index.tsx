@@ -5,7 +5,7 @@ import ModelCard from "@/components/ModelCard";
 import BottomNav from "@/components/BottomNav";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-new.png";
 import modelFeatured from "@/assets/model-featured.jpg";
 import story1 from "@/assets/story-1.jpg";
 import story2 from "@/assets/story-2.jpg";
