@@ -39,7 +39,7 @@ const Index = () => {
             alt="Secret Models" 
             className="w-48 h-48 object-contain flex-shrink-0" 
           />
-          <div className="flex-1">
+          <div className="flex-1 flex justify-center">
             <Stories />
           </div>
         </div>
