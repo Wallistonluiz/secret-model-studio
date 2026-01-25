@@ -244,6 +244,10 @@ const ModelProfile = () => {
           <span className="text-2xl text-muted-foreground">{model.age}</span>
           <img src={verifiedBadge} alt="Verificado" className="w-6 h-6" />
         </div>
+
+        <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+          {model.bio}
+        </p>
         
         <div className="flex items-center gap-2 text-muted-foreground mb-4">
           <MapPin size={16} />
