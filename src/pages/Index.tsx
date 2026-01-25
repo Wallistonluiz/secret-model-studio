@@ -32,14 +32,14 @@ const Index = () => {
           <Stories />
         </>
       ) : (
-        // Desktop: Logo + Stories lado a lado
-        <div className="flex items-center px-6 py-4 gap-8">
+        // Desktop: Logo + Stories lado a lado (Stories centralizado na página)
+        <div className="relative px-6 py-4">
           <img 
             src={logo} 
             alt="Secret Models" 
-            className="w-48 h-48 object-contain flex-shrink-0" 
+            className="absolute left-6 top-4 w-48 h-48 object-contain" 
           />
-          <div className="flex-1 flex justify-center">
+          <div className="flex justify-center">
             <Stories />
           </div>
         </div>
