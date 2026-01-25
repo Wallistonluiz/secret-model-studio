@@ -371,14 +371,16 @@ const ModelProfile = () => {
 
       {/* Fullscreen Gallery Modal */}
       <Dialog open={selectedPhoto !== null} onOpenChange={() => setSelectedPhoto(null)}>
-        <DialogContent className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button]:hidden">
+        <DialogContent className="max-w-full w-full h-full max-h-full p-0 bg-black/95 border-none rounded-none [&>button.dialog-close]:hidden">
           {/* Close button */}
-          <button 
-            onClick={() => setSelectedPhoto(null)} 
-            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-colors border border-white/30"
-          >
-            <X className="w-7 h-7" />
-          </button>
+          <div className="absolute top-6 right-6 z-50">
+            <button 
+              onClick={() => setSelectedPhoto(null)} 
+              className="p-3 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-colors border border-white/30"
+            >
+              <X className="w-7 h-7" />
+            </button>
+          </div>
 
           {/* Draggable Carousel */}
           <Carousel
