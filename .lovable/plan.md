@@ -1,59 +1,61 @@
 
-# Plano: Ícone Padrão para Usuário Deslogado
+# Plano: Galeria com Carrossel Horizontal
 
-## Problema Atual
-Quando o usuário não está logado, o BottomNav mostra a letra "U" dentro do avatar como fallback, o que não é intuitivo.
+## Mudança
 
-## Solução
-Mostrar o ícone `User` do Lucide (ícone de perfil padrão) quando o usuário estiver deslogado, mantendo o avatar com foto/inicial apenas para usuários logados.
+Alterar a navegação da galeria fullscreen de **vertical** (arrastar cima/baixo) para **horizontal** (arrastar para os lados), estilo Instagram/TikTok fotos.
 
-## Mudança Técnica
+## O que será alterado
 
-### Arquivo: `src/components/BottomNav.tsx`
+### Arquivo: `src/pages/ModelProfile.tsx`
 
-1. Importar o ícone `User` do Lucide
-2. Modificar a renderização do item de perfil para verificar se há usuário logado
+Modificar o componente `Carousel` dentro do Dialog (linhas 433-456):
 
+**Antes (vertical):**
 ```tsx
-// Antes (linha 105-111):
-{isAvatar ? (
-  <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
-    <AvatarImage src={avatarUrl || ""} alt="Perfil" />
-    <AvatarFallback className="bg-muted text-xs">
-      {user?.email?.charAt(0).toUpperCase() || "U"}
-    </AvatarFallback>
-  </Avatar>
-)
+<Carousel
+  orientation="vertical"
+  opts={{
+    dragFree: false,
+    containScroll: "trimSnaps",
+  }}
+>
+  <CarouselContent className="h-[100dvh] flex-col">
+    <CarouselItem className="h-[100dvh] pt-0 basis-full">
+```
 
-// Depois:
-{isAvatar ? (
-  user ? (
-    <Avatar className={`${isActive ? "w-9 h-9 ring-2 ring-white" : "w-8 h-8"}`}>
-      <AvatarImage src={avatarUrl || ""} alt="Perfil" />
-      <AvatarFallback className="bg-muted text-xs">
-        {user.email?.charAt(0).toUpperCase() || "U"}
-      </AvatarFallback>
-    </Avatar>
-  ) : (
-    <>
-      <User className="w-5 h-5" />
-      <span className="text-xs font-medium">Perfil</span>
-    </>
-  )
-)
+**Depois (horizontal):**
+```tsx
+<Carousel
+  orientation="horizontal"
+  opts={{
+    startIndex: selectedPhoto || 0,
+    loop: false,
+    dragFree: false,
+    containScroll: "trimSnaps",
+    align: "center",
+  }}
+>
+  <CarouselContent className="-ml-0">
+    <CarouselItem className="pl-0 basis-full flex items-center justify-center h-[100dvh]">
 ```
 
 ## Resultado Visual
 
 ```text
-Deslogado:                    Logado:
-+-------+                     +-------+
-|  👤   |  ← Ícone User       |  📷   |  ← Avatar/Foto
-| Perfil|                     |       |  (sem texto)
-+-------+                     +-------+
+Antes (vertical):          Depois (horizontal):
+     ↑                         ←  [FOTO]  →
+  [FOTO]                       Arrasta pro lado
+     ↓
+Arrasta cima/baixo
 ```
 
-## O que NÃO muda
-- Comportamento do clique (redireciona para login se deslogado)
-- Estilo do item ativo com gradiente
-- Avatar do usuário logado continua igual
+## Indicador de Posição
+
+Os dots (bolinhas) na parte inferior continuam funcionando, indicando qual foto está sendo visualizada.
+
+## Benefícios
+
+- Navegação mais natural e familiar (igual Instagram Stories/Reels)
+- Melhor usabilidade em smartphones
+- Gesto de swipe lateral é mais intuitivo para galerias de fotos
