@@ -32,7 +32,7 @@ const Splash = () => {
         loop
         playsInline
         onTimeUpdate={handleTimeUpdate}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
 
       {/* Logo, Botão e descrição - posicionados com translate */}
@@ -40,7 +40,7 @@ const Splash = () => {
         <img src={logo} alt="Secret Models" className="h-40 object-contain mb-1 translate-y-[30px]" />
         <Button
           onClick={handleEnter}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg font-semibold rounded-full shadow-lg shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+          className="relative z-20 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-6 text-lg font-semibold rounded-full shadow-lg shadow-purple-500/30 transition-all duration-300 hover:scale-105"
         >
           Entrar
         </Button>
