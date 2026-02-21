@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,8 +39,17 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
-    const generatedEmail = `${data.username.toLowerCase()}@secretmodels.app`;
-    const { error } = await signIn(generatedEmail, data.password);
+    // Busca o email real do usuário pelo username
+    const { data: emailResult, error: lookupError } = await supabase
+      .rpc('get_email_by_username', { _username: data.username });
+
+    if (lookupError || !emailResult) {
+      setError('Usuário não encontrado');
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await signIn(emailResult, data.password);
 
     if (error) {
       setError(error.message === 'Invalid login credentials' 

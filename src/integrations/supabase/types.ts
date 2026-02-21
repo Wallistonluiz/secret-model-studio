@@ -1270,6 +1270,7 @@ export type Database = {
           total_transactions: number
         }[]
       }
+      get_email_by_username: { Args: { _username: string }; Returns: string }
       get_financial_summary: {
         Args: { _end_date: string; _start_date: string }
         Returns: {
